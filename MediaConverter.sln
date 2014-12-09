@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCConverter", "MCConverter\MCConverter\MCConverter.csproj", "{2205137B-2985-4527-84DC-71FB5A3717AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LogoOverlay", "LogoOverlay\LogoOverlay\LogoOverlay.csproj", "{348DCB51-E53A-489E-AC51-4413786C0EBE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McUploader", "McUploader\McUploader\McUploader.csproj", "{093F581A-A331-4463-98DA-3CEFA9659354}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McService", "Service\McService\McService\McService.csproj", "{7710E2E6-07A4-4CAE-A4D5-E01701314F19}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2205137B-2985-4527-84DC-71FB5A3717AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2205137B-2985-4527-84DC-71FB5A3717AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2205137B-2985-4527-84DC-71FB5A3717AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2205137B-2985-4527-84DC-71FB5A3717AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{348DCB51-E53A-489E-AC51-4413786C0EBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348DCB51-E53A-489E-AC51-4413786C0EBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348DCB51-E53A-489E-AC51-4413786C0EBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348DCB51-E53A-489E-AC51-4413786C0EBE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{093F581A-A331-4463-98DA-3CEFA9659354}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{093F581A-A331-4463-98DA-3CEFA9659354}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{093F581A-A331-4463-98DA-3CEFA9659354}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{093F581A-A331-4463-98DA-3CEFA9659354}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7710E2E6-07A4-4CAE-A4D5-E01701314F19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7710E2E6-07A4-4CAE-A4D5-E01701314F19}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7710E2E6-07A4-4CAE-A4D5-E01701314F19}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7710E2E6-07A4-4CAE-A4D5-E01701314F19}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
