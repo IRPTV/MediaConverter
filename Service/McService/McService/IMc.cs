@@ -151,8 +151,8 @@ namespace McService
         [WebInvoke(Method = "GET",
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare,
-            UriTemplate = "files/Search/{Count}/files?query={query}")]
-        List<RepositoryFiles> SearchFiles(string Count,string query);
+            UriTemplate = "files/Search/{Count}/files?query={query}&start={start}&End={End}")]
+        List<RepositoryFiles> SearchFiles(string Count,string query,string start,string End);
 
 
         [OperationContract]

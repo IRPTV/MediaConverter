@@ -86,9 +86,9 @@ namespace McService
             for (int i = 0; i < Dt.Rows.Count; i++)
             {
                 UserFiles ff = new UserFiles();
-                ff.Filename = Dt[i]["filename"].ToString();              
+                ff.Filename = Dt[i]["filename"].ToString();
                 ff.Duration = Dt[i]["Duration"].ToString();
-                ff.FileSize = Dt[i]["FileSize"].ToString();            
+                ff.FileSize = Dt[i]["FileSize"].ToString();
                 ff.UserID = Dt[i]["UserID"].ToString();
                 ff.Error = Dt[i]["Error"].ToString();
                 ff.ErrorLog = Dt[i]["ErrorLog"].ToString();
@@ -157,7 +157,7 @@ namespace McService
         public List<ConvertQueue> GetConvertQueue(string TopCount, string Converted, string ProfileID)
         {
             ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQueue(int.Parse(TopCount), bool.Parse(Converted),int.Parse(ProfileID));
+            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQueue(int.Parse(TopCount), bool.Parse(Converted), int.Parse(ProfileID));
             List<ConvertQueue> Lst = new List<ConvertQueue>();
 
             for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
@@ -292,16 +292,16 @@ namespace McService
                 Flag.SrcDirectory = Upload_Dt[i]["SrcDirectory"].ToString();
                 Flag.FilenameSuffix = Upload_Dt[i]["FilenameSuffix"].ToString();
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
-                Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();   
+                Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
                 Lst.Add(Flag);
             }
 
             return Lst;
         }
-        public List<UploadQueue> GetUploadQueueServer(string TopCount,string Ip)
+        public List<UploadQueue> GetUploadQueueServer(string TopCount, string Ip)
         {
             ServiceTableAdapter Upload_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Upload_Dt = Upload_Ta.Select_UploadQ_ByServer(int.Parse(TopCount),Ip);
+            MyDB.DataTable1DataTable Upload_Dt = Upload_Ta.Select_UploadQ_ByServer(int.Parse(TopCount), Ip);
             List<UploadQueue> Lst = new List<UploadQueue>();
 
             for (int i = 0; i < Upload_Dt.Rows.Count; i++)
@@ -318,7 +318,7 @@ namespace McService
                 Flag.SrcDirectory = Upload_Dt[i]["SrcDirectory"].ToString();
                 Flag.FilenameSuffix = Upload_Dt[i]["FilenameSuffix"].ToString();
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
-                Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();                
+                Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
                 Lst.Add(Flag);
             }
 
@@ -350,15 +350,15 @@ namespace McService
 
             //StreamReader reader = new StreamReader(fileContents);
             //FileStream file = File.Create(@"E:\FILES\SOURCE\" + nvc["filename"].ToString());
-            
+
             do
             {
                 bytesRead = fileContents.Read(buffer, 0, buffer.Length);
                 totalBytesRead += bytesRead;
-               // file.Write(buffer, 0, bytesRead);
+                // file.Write(buffer, 0, bytesRead);
             }
             while (bytesRead > 0);
-          //  file.Close();
+            //  file.Close();
         }
 
         #endregion
@@ -388,66 +388,102 @@ namespace McService
         public int SetLogoDone(string LogoID)
         {
             ServiceTableAdapter Flag_Ta = new ServiceTableAdapter();
-            Flag_Ta.Update_Files_LogoDone(long.Parse(LogoID));         
+            Flag_Ta.Update_Files_LogoDone(long.Parse(LogoID));
             return 1;
         }
-          public List<RepositoryFiles>  SearchFiles(string Count,string query)
+        public List<RepositoryFiles> SearchFiles(string Count, string query,string start,string End)
         {
+            ServiceTableAdapter Ta = new ServiceTableAdapter();
             FilesTableAdapter Flag_Ta = new FilesTableAdapter();
             List<RepositoryFiles> Lst = new List<RepositoryFiles>();
             MyDB.FilesDataTable Cnvrt_Dt;
-              if(query.Trim().Length>0)
-              {
-                Cnvrt_Dt=  Flag_Ta.Select_Files_Like(int.Parse(Count),"%"+query+"%");      
 
-              }
-              else
-              {
-                  Cnvrt_Dt = Flag_Ta.Select_Files_Top(int.Parse(Count));      
+            DateTime startDt = DateTime.Now.AddYears(-10);
 
-              }
+            DateTime endDt = DateTime.Now.AddYears(+10);
 
-              for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
-              {
-                  RepositoryFiles itm = new RepositoryFiles();
-                  itm.Filename = "http://192.168.10.26:81/SOURCE/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
-                  itm.Thumbnail = "http://192.168.10.26:81/Converted/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
-                  itm.Id = Cnvrt_Dt[i]["FId"].ToString();
-                  Lst.Add(itm);
-              }
 
-              return Lst;
-            
+            //try
+            //{
+                if (start.Length > 5)
+                {
+                    startDt = DateTime.Parse(start);
+                }
+
+                if (End.Length > 5)
+                {
+                    endDt = DateTime.Parse(End).AddMinutes(1439);
+                }
+            //}
+            //catch
+            //{
+            //   startDt = DateTime.Now.AddYears(-10);
+
+            //   endDt = DateTime.Now.AddYears(+10);
+            //}
+
+
+
+            if (query.Trim().Length > 0)
+            {
+                Cnvrt_Dt = Flag_Ta.Select_Files_Like(int.Parse(Count), "%" + query + "%",startDt,endDt);
+
+            }
+            else
+            {
+                Cnvrt_Dt = Flag_Ta.Select_Files_Top(int.Parse(Count), startDt, endDt);
+
+            }
+
+            for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
+            {
+                RepositoryFiles itm = new RepositoryFiles();
+                itm.Filename = "http://192.168.10.26:81/SOURCE/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
+                itm.Thumbnail = "http://192.168.10.26:81/Converted/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Id = Cnvrt_Dt[i]["FId"].ToString();
+
+                
+                //Get Upload Q:
+                MyDB.DataTable1DataTable FlagUpload_Dt = Ta.SelectUploadQbyFileID(long.Parse(itm.Id));
+                if(FlagUpload_Dt.Rows.Count>0)
+                {
+                    itm.serverPath = FlagUpload_Dt[0]["ServerIp"].ToString();
+                }               
+                Lst.Add(itm);
+            }
+
+            return Lst;
+
         }
 
-          public RepositoryFiles SearchFilesId(string id)
-          {
-              FilesTableAdapter Flag_Ta = new FilesTableAdapter();
-              RepositoryFiles itm = new RepositoryFiles(); 
-              MyDB.FilesDataTable Cnvrt_Dt= Flag_Ta.Select_Files_ByFid(long.Parse(id));
+        public RepositoryFiles SearchFilesId(string id)
+        {
+            FilesTableAdapter Flag_Ta = new FilesTableAdapter();
+            RepositoryFiles itm = new RepositoryFiles();
+            MyDB.FilesDataTable Cnvrt_Dt = Flag_Ta.Select_Files_ByFid(long.Parse(id));
 
-              if (Cnvrt_Dt.Rows.Count == 1)
-              {
-                  
-                  itm.Filename = "http://192.168.10.26:81/SOURCE/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/");
-                  itm.Thumbnail = "http://192.168.10.26:81/Converted/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
-                  itm.Id = Cnvrt_Dt[0]["FId"].ToString();
-              }
+            if (Cnvrt_Dt.Rows.Count == 1)
+            {
 
-              return itm;
+                itm.Filename = "http://192.168.10.26:81/SOURCE/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/");
+                itm.Thumbnail = "http://192.168.10.26:81/Converted/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Id = Cnvrt_Dt[0]["FId"].ToString();
+            }
 
-          }
+            return itm;
 
-          public int FilesError(string query , string id)
-          {
-              FilesTableAdapter Flag_Ta = new FilesTableAdapter();
-              Flag_Ta.Update_FilesError(query, long.Parse(id));
-              return 1;
-             
-          }
+        }
 
-          
-       
+        public int FilesError(string query, string id)
+        {
+            FilesTableAdapter Flag_Ta = new FilesTableAdapter();
+            Flag_Ta.Update_FilesError(query, long.Parse(id));
+            return 1;
+
+        }
+
+
+
 
     }
     public class UserFileList
@@ -470,7 +506,7 @@ namespace McService
         public string Upload_Datetime_Done { get; set; }
         public string Uploaded { get; set; }
 
-       
+
     }
     public class UserDetails
     {
@@ -521,7 +557,7 @@ namespace McService
         public string Filename { get; set; }
         public string FilenameSuffix { get; set; }
         public string Retry { get; set; }
-        public string DateTime_Insert  { get; set; }
+        public string DateTime_Insert { get; set; }
     }
     public class UserFiles
     {
@@ -532,10 +568,10 @@ namespace McService
         public string Error { get; set; }
         public string ErrorLog { get; set; }
 
-        public List<UserFilesConvert>  FilesCnvrt { get; set; }
+        public List<UserFilesConvert> FilesCnvrt { get; set; }
         public List<UserFilesFlag> FilesFlg { get; set; }
         public List<UserFilesUpload> FilesUpld { get; set; }
-     
+
     }
     public class UserFilesConvert
     {
@@ -569,9 +605,9 @@ namespace McService
         public string ConvertDirectory { get; set; }
         public string SrcDirectory { get; set; }
         public string FileId { get; set; }
-        public string Filename { get; set; }    
-        public string Logo  { get; set; }
-        public string LogoFile  { get; set; }
+        public string Filename { get; set; }
+        public string Logo { get; set; }
+        public string LogoFile { get; set; }
 
     }
     public class RepositoryFiles
@@ -579,6 +615,7 @@ namespace McService
         public string Filename { get; set; }
         public string Thumbnail { get; set; }
         public string Id { get; set; }
+        public string serverPath { get; set; }
 
     }
 }

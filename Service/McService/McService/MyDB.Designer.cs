@@ -30,8 +30,6 @@ namespace McService {
         
         private DataTable1DataTable tableDataTable1;
         
-        private global::System.Data.DataRelation relationFK_Files_Users;
-        
         private global::System.Data.SchemaSerializationMode _schemaSerializationMode = global::System.Data.SchemaSerializationMode.IncludeSchema;
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -244,7 +242,6 @@ namespace McService {
                     this.tableDataTable1.InitVars();
                 }
             }
-            this.relationFK_Files_Users = this.Relations["FK_Files_Users"];
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -261,10 +258,6 @@ namespace McService {
             base.Tables.Add(this.tableFiles);
             this.tableDataTable1 = new DataTable1DataTable();
             base.Tables.Add(this.tableDataTable1);
-            this.relationFK_Files_Users = new global::System.Data.DataRelation("FK_Files_Users", new global::System.Data.DataColumn[] {
-                        this.tableUsers.UIdColumn}, new global::System.Data.DataColumn[] {
-                        this.tableDataTable1.UserIDColumn}, false);
-            this.Relations.Add(this.relationFK_Files_Users);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -797,13 +790,6 @@ namespace McService {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public FilesRow FindByFId(long FId) {
-                return ((FilesRow)(this.Rows.Find(new object[] {
-                            FId})));
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public override global::System.Data.DataTable Clone() {
                 FilesDataTable cln = ((FilesDataTable)(base.Clone()));
                 cln.InitVars();
@@ -836,10 +822,7 @@ namespace McService {
                 base.Columns.Add(this.columnDuration);
                 this.columnFileSize = new global::System.Data.DataColumn("FileSize", typeof(long), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnFileSize);
-                this.Constraints.Add(new global::System.Data.UniqueConstraint("Constraint1", new global::System.Data.DataColumn[] {
-                                this.columnFId}, true));
                 this.columnFId.AllowDBNull = false;
-                this.columnFId.Unique = true;
                 this.columnFilename.MaxLength = 500;
             }
             
@@ -1258,7 +1241,7 @@ namespace McService {
                         string Filename, 
                         long Duration, 
                         long FileSize, 
-                        UsersRow parentUsersRowByFK_Files_Users, 
+                        int UserID, 
                         System.DateTime Convert_Datetime_Insert, 
                         System.DateTime Convert_Datetime_Start, 
                         System.DateTime Convert_Datetime_Done, 
@@ -1281,7 +1264,7 @@ namespace McService {
                         Filename,
                         Duration,
                         FileSize,
-                        null,
+                        UserID,
                         Convert_Datetime_Insert,
                         Convert_Datetime_Start,
                         Convert_Datetime_Done,
@@ -1299,9 +1282,6 @@ namespace McService {
                         Retry,
                         ErrorLog,
                         Error};
-                if ((parentUsersRowByFK_Files_Users != null)) {
-                    columnValuesArray[3] = parentUsersRowByFK_Files_Users[0];
-                }
                 rowDataTable1Row.ItemArray = columnValuesArray;
                 this.Rows.Add(rowDataTable1Row);
                 return rowDataTable1Row;
@@ -1656,17 +1636,6 @@ namespace McService {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetCatIdNull() {
                 this[this.tableUsers.CatIdColumn] = global::System.Convert.DBNull;
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public DataTable1Row[] GetDataTable1Rows() {
-                if ((this.Table.ChildRelations["FK_Files_Users"] == null)) {
-                    return new DataTable1Row[0];
-                }
-                else {
-                    return ((DataTable1Row[])(base.GetChildRows(this.Table.ChildRelations["FK_Files_Users"])));
-                }
             }
         }
         
@@ -2127,17 +2096,6 @@ namespace McService {
                 }
                 set {
                     this[this.tableDataTable1.ErrorColumn] = value;
-                }
-            }
-            
-            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public UsersRow UsersRow {
-                get {
-                    return ((UsersRow)(this.GetParentRow(this.Table.ParentRelations["FK_Files_Users"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["FK_Files_Users"]);
                 }
             }
             
@@ -2968,17 +2926,27 @@ WHERE        (Files.UserID = @UserId)";
             this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[4] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[4].Connection = this.Connection;
-            this._commandCollection[4].CommandText = "SELECT        TOP (@Count) FId, Filename, Duration, FileSize, UserID, Logo\r\nFROM " +
-                "           Files\r\nWHERE        (Filename LIKE @Fn)\r\nORDER BY FId DESC";
+            this._commandCollection[4].CommandText = @"SELECT        TOP (@Count) Files.FId, Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Files.Logo
+FROM            Files INNER JOIN
+                         Queue_Convert ON Files.FId = Queue_Convert.FileId
+WHERE        (Files.Filename LIKE @Fn) AND (Queue_Convert.DateTime_Insert BETWEEN @Start AND @End)
+ORDER BY Files.FId DESC";
             this._commandCollection[4].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Count", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Fn", global::System.Data.SqlDbType.NVarChar, 500, global::System.Data.ParameterDirection.Input, 0, 0, "Filename", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Start", global::System.Data.SqlDbType.DateTime, 8, global::System.Data.ParameterDirection.Input, 0, 0, "DateTime_Insert", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@End", global::System.Data.SqlDbType.DateTime, 8, global::System.Data.ParameterDirection.Input, 0, 0, "DateTime_Insert", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[5] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[5].Connection = this.Connection;
-            this._commandCollection[5].CommandText = "SELECT        TOP (@Count) FId, Filename, Duration, FileSize, UserID, Logo\r\nFROM " +
-                "           Files\r\n\r\nORDER BY FId DESC";
+            this._commandCollection[5].CommandText = @"SELECT        TOP (@Count) Files.FId, Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Files.Logo
+FROM            Files INNER JOIN
+                         Queue_Convert ON Files.FId = Queue_Convert.FileId
+WHERE        (Queue_Convert.DateTime_Insert BETWEEN @Start AND @End)
+ORDER BY Files.FId DESC";
             this._commandCollection[5].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Count", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Start", global::System.Data.SqlDbType.DateTime, 8, global::System.Data.ParameterDirection.Input, 0, 0, "DateTime_Insert", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[5].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@End", global::System.Data.SqlDbType.DateTime, 8, global::System.Data.ParameterDirection.Input, 0, 0, "DateTime_Insert", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[6] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[6].Connection = this.Connection;
             this._commandCollection[6].CommandText = "UPDATE       Files\r\nSET                Logo = 1, ErrorLog = @error, Error = 1\r\nWH" +
@@ -3032,7 +3000,7 @@ WHERE        (Files.UserID = @UserId)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual MyDB.FilesDataTable Select_Files_Like(int Count, string Fn) {
+        public virtual MyDB.FilesDataTable Select_Files_Like(int Count, string Fn, global::System.Nullable<global::System.DateTime> Start, global::System.Nullable<global::System.DateTime> End) {
             this.Adapter.SelectCommand = this.CommandCollection[4];
             this.Adapter.SelectCommand.Parameters[0].Value = ((int)(Count));
             if ((Fn == null)) {
@@ -3040,6 +3008,18 @@ WHERE        (Files.UserID = @UserId)";
             }
             else {
                 this.Adapter.SelectCommand.Parameters[1].Value = ((string)(Fn));
+            }
+            if ((Start.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[2].Value = ((System.DateTime)(Start.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
+            if ((End.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[3].Value = ((System.DateTime)(End.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[3].Value = global::System.DBNull.Value;
             }
             MyDB.FilesDataTable dataTable = new MyDB.FilesDataTable();
             this.Adapter.Fill(dataTable);
@@ -3050,9 +3030,21 @@ WHERE        (Files.UserID = @UserId)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual MyDB.FilesDataTable Select_Files_Top(int Count) {
+        public virtual MyDB.FilesDataTable Select_Files_Top(int Count, global::System.Nullable<global::System.DateTime> Start, global::System.Nullable<global::System.DateTime> End) {
             this.Adapter.SelectCommand = this.CommandCollection[5];
             this.Adapter.SelectCommand.Parameters[0].Value = ((int)(Count));
+            if ((Start.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[1].Value = ((System.DateTime)(Start.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
+            if ((End.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[2].Value = ((System.DateTime)(End.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[2].Value = global::System.DBNull.Value;
+            }
             MyDB.FilesDataTable dataTable = new MyDB.FilesDataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -3325,7 +3317,7 @@ WHERE        (Files.UserID = @UserId)";
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         private void InitCommandCollection() {
-            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[28];
+            this._commandCollection = new global::System.Data.SqlClient.SqlCommand[29];
             this._commandCollection[0] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[0].Connection = this.Connection;
             this._commandCollection[0].CommandText = "SELECT        Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Queue" +
@@ -3539,70 +3531,82 @@ WHERE        (Users.UId = @UId)";
             this._commandCollection[17].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UId", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "UId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[18] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[18].Connection = this.Connection;
-            this._commandCollection[18].CommandText = "UPDATE       Files\r\nSET                Logo = 1\r\nWHERE        (FId = @FileId)";
+            this._commandCollection[18].CommandText = @"SELECT   top(1)     Categories_Path.ServerIp, Categories_Path.ServerUser, Categories_Path.ServerPass, Categories_Path.DestDirectory
+FROM            Categories INNER JOIN
+                         Categories_Path ON Categories.CtgId = Categories_Path.CatId INNER JOIN
+                         Categories_Profiles ON Categories.CtgId = Categories_Profiles.CatId INNER JOIN
+                         Profiles ON Categories_Profiles.ProfId = Profiles.Id INNER JOIN
+                         Queue_Convert ON Categories_Profiles.CtPtblId = Queue_Convert.CpId INNER JOIN
+                         Files ON Queue_Convert.FileId = Files.FId
+WHERE        (Files.FId = @FileID) and Categories_Path.ServerIp like '\\192.168%'";
             this._commandCollection[18].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[18].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FileId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._commandCollection[18].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FileID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[19] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[19].Connection = this.Connection;
-            this._commandCollection[19].CommandText = "UPDATE       Queue_Flag\r\nSET                DateTime_done = GETDATE(),\r\nisdone=1\r" +
-                "\nWHERE        (QfId = @flagQID)";
+            this._commandCollection[19].CommandText = "UPDATE       Files\r\nSET                Logo = 1\r\nWHERE        (FId = @FileId)";
             this._commandCollection[19].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[19].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@flagQID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QfId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._commandCollection[19].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FileId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[20] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[20].Connection = this.Connection;
-            this._commandCollection[20].CommandText = "UPDATE       Queue_Flag\r\nSET                DateTime_Start = GETDATE()\r\nWHERE    " +
-                "    (QfId = @flagQID)";
+            this._commandCollection[20].CommandText = "UPDATE       Queue_Flag\r\nSET                DateTime_done = GETDATE(),\r\nisdone=1\r" +
+                "\nWHERE        (QfId = @flagQID)";
             this._commandCollection[20].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[20].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@flagQID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QfId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[21] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[21].Connection = this.Connection;
-            this._commandCollection[21].CommandText = "UPDATE       Queue_Upload\r\nSET                Retry = Retry + 1\r\nWHERE        (Qu" +
-                "Id = @ID)";
+            this._commandCollection[21].CommandText = "UPDATE       Queue_Flag\r\nSET                DateTime_Start = GETDATE()\r\nWHERE    " +
+                "    (QfId = @flagQID)";
             this._commandCollection[21].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[21].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QuId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._commandCollection[21].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@flagQID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QfId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[22] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[22].Connection = this.Connection;
-            this._commandCollection[22].CommandText = "UPDATE       Queue_Upload\r\nSET                DateTime_Done = GETDATE(), Uploaded" +
-                " = 1\r\nWHERE        (QuId = @quid)";
+            this._commandCollection[22].CommandText = "UPDATE       Queue_Upload\r\nSET                Retry = Retry + 1\r\nWHERE        (Qu" +
+                "Id = @ID)";
             this._commandCollection[22].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[22].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@quid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QuId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._commandCollection[22].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@ID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QuId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[23] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[23].Connection = this.Connection;
-            this._commandCollection[23].CommandText = "UPDATE       Queue_Upload\r\nSET                DateTime_Start = GETDATE()\r\nWHERE  " +
-                "      (QuId = @QUID)";
+            this._commandCollection[23].CommandText = "UPDATE       Queue_Upload\r\nSET                DateTime_Done = GETDATE(), Uploaded" +
+                " = 1\r\nWHERE        (QuId = @quid)";
             this._commandCollection[23].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[23].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QUID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QuId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._commandCollection[23].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@quid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QuId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[24] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[24].Connection = this.Connection;
-            this._commandCollection[24].CommandText = @"SELECT        Queue_Convert.DateTime_Insert, Queue_Convert.DateTime_Start, Queue_Convert.DateTime_Done, Queue_Convert.Converted, Profiles.Title
+            this._commandCollection[24].CommandText = "UPDATE       Queue_Upload\r\nSET                DateTime_Start = GETDATE()\r\nWHERE  " +
+                "      (QuId = @QUID)";
+            this._commandCollection[24].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[24].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QUID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QuId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
+            this._commandCollection[25] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[25].Connection = this.Connection;
+            this._commandCollection[25].CommandText = @"SELECT        Queue_Convert.DateTime_Insert, Queue_Convert.DateTime_Start, Queue_Convert.DateTime_Done, Queue_Convert.Converted, Profiles.Title
 FROM            Queue_Convert INNER JOIN
                          Files ON Queue_Convert.FileId = Files.FId INNER JOIN
                          Categories_Profiles ON Queue_Convert.CpId = Categories_Profiles.CtPtblId INNER JOIN
                          Profiles ON Categories_Profiles.ProfId = Profiles.Id
 WHERE        (Files.FId = @fid)
 ORDER BY Categories_Profiles.Priority";
-            this._commandCollection[24].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[24].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._commandCollection[25] = new global::System.Data.SqlClient.SqlCommand();
-            this._commandCollection[25].Connection = this.Connection;
-            this._commandCollection[25].CommandText = @"SELECT        Queue_Flag.DateTime_Insert, Queue_Flag.DateTime_Start, Queue_Flag.DateTime_Done, Queue_Flag.Isdone, Profiles.Title
+            this._commandCollection[25].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[25].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[26] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[26].Connection = this.Connection;
+            this._commandCollection[26].CommandText = @"SELECT        Queue_Flag.DateTime_Insert, Queue_Flag.DateTime_Start, Queue_Flag.DateTime_Done, Queue_Flag.Isdone, Profiles.Title
 FROM            Queue_Convert INNER JOIN
                          Files ON Queue_Convert.FileId = Files.FId INNER JOIN
                          Queue_Flag ON Queue_Convert.QtblId = Queue_Flag.QcId INNER JOIN
                          Categories_Profiles ON Queue_Convert.CpId = Categories_Profiles.CtPtblId INNER JOIN
                          Profiles ON Categories_Profiles.ProfId = Profiles.Id
 WHERE        (Files.FId = @fid)";
-            this._commandCollection[25].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[25].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
-            this._commandCollection[26] = new global::System.Data.SqlClient.SqlCommand();
-            this._commandCollection[26].Connection = this.Connection;
-            this._commandCollection[26].CommandText = "SELECT        TOP (20) *\r\nFROM            Files\r\nWHERE        (UserID = @UserId)\r" +
-                "\nORDER BY FId DESC";
             this._commandCollection[26].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[26].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserId", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "UserID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[26].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[27] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[27].Connection = this.Connection;
-            this._commandCollection[27].CommandText = @"SELECT        Queue_Upload.DateTime_Insert, Queue_Upload.DateTime_Start, Queue_Upload.DateTime_Done, Queue_Upload.Uploaded, Categories_Path.ServerIp, 
+            this._commandCollection[27].CommandText = "SELECT        TOP (20) *\r\nFROM            Files\r\nWHERE        (UserID = @UserId)\r" +
+                "\nORDER BY FId DESC";
+            this._commandCollection[27].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[27].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserId", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "UserID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[28] = new global::System.Data.SqlClient.SqlCommand();
+            this._commandCollection[28].Connection = this.Connection;
+            this._commandCollection[28].CommandText = @"SELECT        Queue_Upload.DateTime_Insert, Queue_Upload.DateTime_Start, Queue_Upload.DateTime_Done, Queue_Upload.Uploaded, Categories_Path.ServerIp, 
                          Profiles.Title
 FROM            Queue_Convert INNER JOIN
                          Files ON Queue_Convert.FileId = Files.FId INNER JOIN
@@ -3611,8 +3615,8 @@ FROM            Queue_Convert INNER JOIN
                          Categories_Profiles ON Queue_Convert.CpId = Categories_Profiles.CtPtblId INNER JOIN
                          Profiles ON Categories_Profiles.ProfId = Profiles.Id
 WHERE        (Files.FId = @fid)";
-            this._commandCollection[27].CommandType = global::System.Data.CommandType.Text;
-            this._commandCollection[27].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[28].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[28].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3829,9 +3833,9 @@ WHERE        (Files.FId = @fid)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual MyDB.DataTable1DataTable User_Files_Convert(long fid) {
-            this.Adapter.SelectCommand = this.CommandCollection[24];
-            this.Adapter.SelectCommand.Parameters[0].Value = ((long)(fid));
+        public virtual MyDB.DataTable1DataTable SelectUploadQbyFileID(long FileID) {
+            this.Adapter.SelectCommand = this.CommandCollection[18];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((long)(FileID));
             MyDB.DataTable1DataTable dataTable = new MyDB.DataTable1DataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;
@@ -3841,7 +3845,7 @@ WHERE        (Files.FId = @fid)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual MyDB.DataTable1DataTable User_Files_Select_Flag(long fid) {
+        public virtual MyDB.DataTable1DataTable User_Files_Convert(long fid) {
             this.Adapter.SelectCommand = this.CommandCollection[25];
             this.Adapter.SelectCommand.Parameters[0].Value = ((long)(fid));
             MyDB.DataTable1DataTable dataTable = new MyDB.DataTable1DataTable();
@@ -3853,8 +3857,20 @@ WHERE        (Files.FId = @fid)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual MyDB.DataTable1DataTable User_Files_SelectTop(global::System.Nullable<int> UserId) {
+        public virtual MyDB.DataTable1DataTable User_Files_Select_Flag(long fid) {
             this.Adapter.SelectCommand = this.CommandCollection[26];
+            this.Adapter.SelectCommand.Parameters[0].Value = ((long)(fid));
+            MyDB.DataTable1DataTable dataTable = new MyDB.DataTable1DataTable();
+            this.Adapter.Fill(dataTable);
+            return dataTable;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
+        public virtual MyDB.DataTable1DataTable User_Files_SelectTop(global::System.Nullable<int> UserId) {
+            this.Adapter.SelectCommand = this.CommandCollection[27];
             if ((UserId.HasValue == true)) {
                 this.Adapter.SelectCommand.Parameters[0].Value = ((int)(UserId.Value));
             }
@@ -3871,7 +3887,7 @@ WHERE        (Files.FId = @fid)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
         public virtual MyDB.DataTable1DataTable User_Files_SelectUpload(long fid) {
-            this.Adapter.SelectCommand = this.CommandCollection[27];
+            this.Adapter.SelectCommand = this.CommandCollection[28];
             this.Adapter.SelectCommand.Parameters[0].Value = ((long)(fid));
             MyDB.DataTable1DataTable dataTable = new MyDB.DataTable1DataTable();
             this.Adapter.Fill(dataTable);
@@ -4036,7 +4052,7 @@ WHERE        (Files.FId = @fid)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
         public virtual int Update_Files_LogoDone(long FileId) {
-            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[18];
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[19];
             command.Parameters[0].Value = ((long)(FileId));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4060,30 +4076,6 @@ WHERE        (Files.FId = @fid)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
         public virtual int Update_Flag_Done(long flagQID) {
-            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[19];
-            command.Parameters[0].Value = ((long)(flagQID));
-            global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
-            if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
-                        != global::System.Data.ConnectionState.Open)) {
-                command.Connection.Open();
-            }
-            int returnValue;
-            try {
-                returnValue = command.ExecuteNonQuery();
-            }
-            finally {
-                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
-                    command.Connection.Close();
-                }
-            }
-            return returnValue;
-        }
-        
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
-        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
-        public virtual int Update_Flag_Start(long flagQID) {
             global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[20];
             command.Parameters[0].Value = ((long)(flagQID));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
@@ -4107,8 +4099,32 @@ WHERE        (Files.FId = @fid)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
-        public virtual int Update_Retry_Upload(long ID) {
+        public virtual int Update_Flag_Start(long flagQID) {
             global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[21];
+            command.Parameters[0].Value = ((long)(flagQID));
+            global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
+            if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
+                        != global::System.Data.ConnectionState.Open)) {
+                command.Connection.Open();
+            }
+            int returnValue;
+            try {
+                returnValue = command.ExecuteNonQuery();
+            }
+            finally {
+                if ((previousConnectionState == global::System.Data.ConnectionState.Closed)) {
+                    command.Connection.Close();
+                }
+            }
+            return returnValue;
+        }
+        
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+        [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
+        [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
+        public virtual int Update_Retry_Upload(long ID) {
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[22];
             command.Parameters[0].Value = ((long)(ID));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4132,7 +4148,7 @@ WHERE        (Files.FId = @fid)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
         public virtual int Update_Upload_Q_Done(long quid) {
-            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[22];
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[23];
             command.Parameters[0].Value = ((long)(quid));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -4156,7 +4172,7 @@ WHERE        (Files.FId = @fid)";
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
         public virtual int Update_Upload_Q_Start(long QUID) {
-            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[23];
+            global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[24];
             command.Parameters[0].Value = ((long)(QUID));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
