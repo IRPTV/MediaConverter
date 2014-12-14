@@ -2926,7 +2926,7 @@ WHERE        (Files.UserID = @UserId)";
             this._commandCollection[3].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[4] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[4].Connection = this.Connection;
-            this._commandCollection[4].CommandText = @"SELECT        TOP (@Count) Files.FId, Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Files.Logo
+            this._commandCollection[4].CommandText = @"SELECT    DISTINCT    TOP (@Count) Files.FId, Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Files.Logo
 FROM            Files INNER JOIN
                          Queue_Convert ON Files.FId = Queue_Convert.FileId
 WHERE        (Files.Filename LIKE @Fn) AND (Queue_Convert.DateTime_Insert BETWEEN @Start AND @End)
@@ -2938,7 +2938,7 @@ ORDER BY Files.FId DESC";
             this._commandCollection[4].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@End", global::System.Data.SqlDbType.DateTime, 8, global::System.Data.ParameterDirection.Input, 0, 0, "DateTime_Insert", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[5] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[5].Connection = this.Connection;
-            this._commandCollection[5].CommandText = @"SELECT        TOP (@Count) Files.FId, Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Files.Logo
+            this._commandCollection[5].CommandText = @"SELECT DISTINCT        TOP (@Count) Files.FId, Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Files.Logo
 FROM            Files INNER JOIN
                          Queue_Convert ON Files.FId = Queue_Convert.FileId
 WHERE        (Queue_Convert.DateTime_Insert BETWEEN @Start AND @End)
