@@ -38,7 +38,7 @@ namespace MCConverter
         {
             string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/convert/1000/false/" + ProfId);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1000/false/" + ProfId);
             try
             {
                 WebResponse response = request.GetResponse();
@@ -67,7 +67,7 @@ namespace MCConverter
             QueueCount();
             string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/convert/1/false/" + ProfId);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1/false/" + ProfId);
             try
             {
                 WebResponse response = request.GetResponse();
@@ -125,7 +125,7 @@ namespace MCConverter
 
                     proc.Start();
 
-                    HttpWebRequest ReqStart = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/convert/" + item.ConvertId + "/start");
+                    HttpWebRequest ReqStart = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/start");
                     ReqStart.GetResponse();
 
                     StreamReader reader = proc.StandardError;
@@ -143,7 +143,7 @@ namespace MCConverter
                         richTextBox1.ScrollToCaret();
                         Application.DoEvents();
                     }
-                    HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/convert/" + item.ConvertId + "/done");
+                    HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/done");
                     ReqDone.GetResponse();
 
 

@@ -37,7 +37,7 @@ namespace LogoOverlay
         protected void QueueCount()
         {
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/Logo/1000");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/1000");
             try
             {
                 WebResponse response = request.GetResponse();
@@ -65,7 +65,7 @@ namespace LogoOverlay
         {
             QueueCount();
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/logo/1");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/logo/1");
             try
             {
                 WebResponse response = request.GetResponse();
@@ -158,12 +158,12 @@ namespace LogoOverlay
                         {
                             ErrorLog = ErrorLog.Substring(0, 499);
                         }
-                        HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/Error?query="+ErrorLog+"&id="+item.FileId);
+                        HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Error?query="+ErrorLog+"&id="+item.FileId);
                         ReqError.GetResponse();
                     }
                     else
                     {
-                        HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create("http://192.168.10.26/mc.svc/files/Logo/" + item.FileId + "/Done");
+                        HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/" + item.FileId + "/Done");
                         ReqDone.GetResponse();
                     }
                   
