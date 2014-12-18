@@ -37,7 +37,7 @@ namespace LogoOverlay
         protected void QueueCount()
         {
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/1000");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/1000/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             try
             {
                 WebResponse response = request.GetResponse();
@@ -65,7 +65,7 @@ namespace LogoOverlay
         {
             QueueCount();
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/logo/1");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/logo/1/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             try
             {
                 WebResponse response = request.GetResponse();
