@@ -50,8 +50,8 @@ namespace McService
         [WebInvoke(Method = "GET",
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare,
-            UriTemplate = "files/convert/{TopCount}/{Converted}/{ProfileID}")]
-        List<ConvertQueue> GetConvertQueue(string TopCount, string Converted, string ProfileID);
+            UriTemplate = "files/convert/{TopCount}/{Converted}/{ProfileID}/{ServerCode}")]
+        List<ConvertQueue> GetConvertQueue(string TopCount, string Converted, string ProfileID, string ServerCode);
 
         [OperationContract]
         [WebInvoke(Method = "GET",
@@ -81,8 +81,8 @@ namespace McService
         [WebInvoke(Method = "GET",
            ResponseFormat = WebMessageFormat.Json,
            BodyStyle = WebMessageBodyStyle.Bare,
-           UriTemplate = "files/flag/{TopCount}/{Flaged}")]
-        List<FlagQueue> GetFlagQueue(string TopCount, string Flaged);
+           UriTemplate = "files/flag/{TopCount}/{Flaged}/{ServerCode}")]
+        List<FlagQueue> GetFlagQueue(string TopCount, string Flaged, string ServerCode);
 
 
         [WebInvoke(Method = "GET",
@@ -108,8 +108,8 @@ namespace McService
         [WebInvoke(Method = "GET",
       ResponseFormat = WebMessageFormat.Json,
       BodyStyle = WebMessageBodyStyle.Bare,
-      UriTemplate = "files/upload/{TopCount}/{Ip}")]
-        List<UploadQueue> GetUploadQueueServer(string TopCount, string Ip);
+      UriTemplate = "files/upload/{TopCount}/{Ip}/{ServerCode}")]
+        List<UploadQueue> GetUploadQueueServer(string TopCount, string Ip, string ServerCode);
 
 
         [WebInvoke(Method = "GET",
@@ -131,14 +131,13 @@ namespace McService
         [WebInvoke(Method = "*", UriTemplate = "File/upload")]
         void UploadFile(Stream fileContents);
         #endregion
-
-
+        
         [OperationContract]
         [WebInvoke(Method = "GET",
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare,
-            UriTemplate = "files/Logo/{Count}")]
-        List<LogoQueue> GetLogoQueue(string Count);
+            UriTemplate = "files/Logo/{Count}/{ServerCode}")]
+        List<LogoQueue> GetLogoQueue(string Count, string ServerCode);
 
         [OperationContract]
         [WebInvoke(Method = "GET",

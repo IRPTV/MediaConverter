@@ -154,10 +154,10 @@ namespace McService
             return Lst;
         }
 
-        public List<ConvertQueue> GetConvertQueue(string TopCount, string Converted, string ProfileID)
+        public List<ConvertQueue> GetConvertQueue(string TopCount, string Converted, string ProfileID,string ServerCode)
         {
             ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQueue(int.Parse(TopCount), bool.Parse(Converted), int.Parse(ProfileID));
+            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQueue(int.Parse(TopCount), bool.Parse(Converted), int.Parse(ProfileID), short.Parse(ServerCode));
             List<ConvertQueue> Lst = new List<ConvertQueue>();
 
             for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
@@ -214,10 +214,10 @@ namespace McService
             return Cnvrt_Ta.Flag_Queue_Insert(long.Parse(ConvertId));
         }
 
-        public List<FlagQueue> GetFlagQueue(string TopCount, string Flaged)
+        public List<FlagQueue> GetFlagQueue(string TopCount, string Flaged, string ServerCode)
         {
             ServiceTableAdapter Flag_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Flag_Dt = Flag_Ta.Select_FlagQueue(int.Parse(TopCount), bool.Parse(Flaged));
+            MyDB.DataTable1DataTable Flag_Dt = Flag_Ta.Select_FlagQueue(int.Parse(TopCount), bool.Parse(Flaged),short.Parse(ServerCode));
             List<FlagQueue> Lst = new List<FlagQueue>();
 
             for (int i = 0; i < Flag_Dt.Rows.Count; i++)
@@ -298,10 +298,10 @@ namespace McService
 
             return Lst;
         }
-        public List<UploadQueue> GetUploadQueueServer(string TopCount, string Ip)
+        public List<UploadQueue> GetUploadQueueServer(string TopCount, string Ip, string ServerCode)
         {
             ServiceTableAdapter Upload_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Upload_Dt = Upload_Ta.Select_UploadQ_ByServer(int.Parse(TopCount), Ip);
+            MyDB.DataTable1DataTable Upload_Dt = Upload_Ta.Select_UploadQ_ByServer(int.Parse(TopCount), Ip, short.Parse(ServerCode));
             List<UploadQueue> Lst = new List<UploadQueue>();
 
             for (int i = 0; i < Upload_Dt.Rows.Count; i++)
@@ -363,10 +363,10 @@ namespace McService
 
         #endregion
 
-        public List<LogoQueue> GetLogoQueue(string Count)
+        public List<LogoQueue> GetLogoQueue(string Count, string ServerCode)
         {
             ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_Files_LogoQueue(int.Parse(Count));
+            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_Files_LogoQueue(int.Parse(Count),short.Parse(ServerCode));
             List<LogoQueue> Lst = new List<LogoQueue>();
 
             for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
