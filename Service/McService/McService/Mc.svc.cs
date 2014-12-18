@@ -517,7 +517,27 @@ namespace McService
 
         }
 
+        public void InsertFile(Stream Data)
+        {
+            string body = new StreamReader(Data).ReadToEnd();
+            NameValueCollection nvc = HttpUtility.ParseQueryString(body);
 
+            string FileName = nvc[0].ToString();
+            string UserId = nvc[1].ToString();
+
+
+            ServiceTableAdapter Ta = new ServiceTableAdapter();
+            FilesTableAdapter FTa = new FilesTableAdapter();
+
+            int RetId = int.Parse(FTa.Insert_File(FileName, int.Parse(UserId), 0, 0).ToString());
+
+            MyDB.DataTable1DataTable Dt2 = Ta.Select_User_Directory(int.Parse(UserId));
+            for (int i = 0; i < Dt2.Rows.Count; i++)
+            {
+                Ta.Insert_Convert_Q(RetId, int.Parse(Dt2[i]["CtPtblId"].ToString()), int.Parse(UserId));
+            }
+
+        }
 
 
     }

@@ -175,5 +175,13 @@ namespace McService
             BodyStyle = WebMessageBodyStyle.Bare,
             UriTemplate = "files/{id}")]
         RepositoryFiles SearchFilesId(string id);
+
+
+
+        [OperationContract]
+        [WebInvoke(Method = "POST",
+            ResponseFormat = WebMessageFormat.Json,
+            UriTemplate = "files/insert")]
+        void InsertFile(Stream Data);
     }
 }
