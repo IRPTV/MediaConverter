@@ -38,7 +38,8 @@ namespace MCConverter
         {
             string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1000/false/" + ProfId);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1000/false/" + ProfId +
+                "/" +System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             try
             {
                 WebResponse response = request.GetResponse();
@@ -67,7 +68,7 @@ namespace MCConverter
             QueueCount();
             string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
             string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1/false/" + ProfId);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1/false/" + ProfId + "/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             try
             {
                 WebResponse response = request.GetResponse();
