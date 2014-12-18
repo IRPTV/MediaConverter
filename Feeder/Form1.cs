@@ -20,46 +20,11 @@ namespace Feeder
         private void Form1_Load(object sender, EventArgs e)
         {
 
-        }
-        protected void CopyLocal(string SourceFile, string DestFile, string TemDir)
-        {
-            richTextBox2.Text += "\n===================\n";
-            richTextBox2.SelectionStart = richTextBox2.Text.Length;
-            richTextBox2.ScrollToCaret();
-            Application.DoEvents();
-
-
-            DirectoryInfo Dir = new DirectoryInfo(TemDir);
-            if (!Dir.Exists)
-            {
-                Dir.Create();
-                richTextBox2.Text += "Temp Directory Created: " + Dir.ToString() + "\n";
-                richTextBox2.SelectionStart = richTextBox2.Text.Length;
-                richTextBox2.ScrollToCaret();
-                Application.DoEvents();
-            }
-            richTextBox2.Text += "Start Copy To Local: " + SourceFile.ToString() + "\n";
-            richTextBox2.SelectionStart = richTextBox2.Text.Length;
-            richTextBox2.ScrollToCaret();
-            Application.DoEvents();
-
-            List<String> TempFiles = new List<String>();
-            TempFiles.Add(SourceFile);
-
-            CopyFiles.CopyFiles Temp = new CopyFiles.CopyFiles(TempFiles, DestFile);
-            Temp.EV_copyCanceled += Temp_EV_copyCanceled;
-            Temp.EV_copyComplete += Temp_EV_copyComplete;
-
-            CopyFiles.DIA_CopyFiles TempDiag = new CopyFiles.DIA_CopyFiles();
-            TempDiag.SynchronizationObject = this;
-            Temp.CopyAsync(TempDiag);
-
-        }
+        }        
         void Temp_EV_copyComplete()
         {
             this.Invoke(new MethodInvoker(delegate()
-            {
-               
+            {               
 
             }));
 
@@ -79,12 +44,47 @@ namespace Feeder
         }
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-
+            label2.Text = openFileDialog1.FileName;
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
+            if(openFileDialog1.FileName.Length>0)
+            {
+                string SourceFile = openFileDialog1.FileName;
 
+                richTextBox2.Text += "\n===================\n";
+                richTextBox2.SelectionStart = richTextBox2.Text.Length;
+                richTextBox2.ScrollToCaret();
+                Application.DoEvents();
+
+                string path = System.Configuration.ConfigurationSettings.AppSettings["DestPath"].Trim() + "\\" + DateTime.Now.ToString("yyyyMMdd");
+                string DestFile = path+"\\"+ Path.GetFileName(openFileDialog1.FileName);
+                DirectoryInfo Dir = new DirectoryInfo(path);
+                if (!Dir.Exists)
+                {
+                    Dir.Create();
+                    richTextBox2.Text += "Temp Directory Created: " + Dir.ToString() + "\n";
+                    richTextBox2.SelectionStart = richTextBox2.Text.Length;
+                    richTextBox2.ScrollToCaret();
+                    Application.DoEvents();
+                }
+                richTextBox2.Text += "Start Copy To Local: " + SourceFile.ToString() + "\n";
+                richTextBox2.SelectionStart = richTextBox2.Text.Length;
+                richTextBox2.ScrollToCaret();
+                Application.DoEvents();
+
+                List<String> TempFiles = new List<String>();
+                TempFiles.Add(SourceFile);
+
+                CopyFiles.CopyFiles Temp = new CopyFiles.CopyFiles(TempFiles, DestFile);
+                Temp.EV_copyCanceled += Temp_EV_copyCanceled;
+                Temp.EV_copyComplete += Temp_EV_copyComplete;
+
+                CopyFiles.DIA_CopyFiles TempDiag = new CopyFiles.DIA_CopyFiles();
+                TempDiag.SynchronizationObject = this;
+                Temp.CopyAsync(TempDiag);
+            }
         }
     }
 }
