@@ -86,6 +86,14 @@ namespace McService
 
 
         [WebInvoke(Method = "GET",
+           ResponseFormat = WebMessageFormat.Json,
+           BodyStyle = WebMessageBodyStyle.Bare,
+           UriTemplate = "files/flag/{TopCount}/{Flaged}")]
+        List<FlagQueue> GetFlagQueueDefaultServer(string TopCount, string Flaged);
+
+
+
+        [WebInvoke(Method = "GET",
           ResponseFormat = WebMessageFormat.Json,
           BodyStyle = WebMessageBodyStyle.Bare,
           UriTemplate = "files/flag/{FlagId}/start")]

@@ -251,7 +251,42 @@ namespace McService
 
             return Lst;
         }
+        public List<FlagQueue> GetFlagQueueDefaultServer(string TopCount, string Flaged)
+        {
+            ServiceTableAdapter Flag_Ta = new ServiceTableAdapter();
+            MyDB.DataTable1DataTable Flag_Dt = Flag_Ta.Select_FlagQueue(int.Parse(TopCount), bool.Parse(Flaged),1);
+            List<FlagQueue> Lst = new List<FlagQueue>();
 
+            for (int i = 0; i < Flag_Dt.Rows.Count; i++)
+            {
+                FlagQueue Flag = new FlagQueue();
+                Flag.Command = Flag_Dt[i]["Command"].ToString();
+                Flag.ConvertDirectory = Flag_Dt[i]["ConvertDirectory"].ToString();
+                Flag.QfId = Flag_Dt[i]["QfId"].ToString();
+                Flag.FileId = Flag_Dt[i]["FileId"].ToString();
+                Flag.Filename = Flag_Dt[i]["Filename"].ToString();
+                Flag.FilenameSuffix = Flag_Dt[i]["FilenameSuffix"].ToString();
+                Flag.Kind = Flag_Dt[i]["Kind"].ToString();
+                Flag.SrcDirectory = Flag_Dt[i]["SrcDirectory"].ToString();
+
+                //Get Upload Q:
+                MyDB.DataTable1DataTable FlagUpload_Dt = Flag_Ta.Select_UploadQfor_Flag(long.Parse(Flag.QfId));
+                List<UploadQueue> UpQList = new List<UploadQueue>();
+                for (int j = 0; j < FlagUpload_Dt.Rows.Count; j++)
+                {
+                    UploadQueue uq = new UploadQueue();
+                    uq.DestDirectory = FlagUpload_Dt[j]["DestDirectory"].ToString();
+                    uq.ServerIp = FlagUpload_Dt[j]["ServerIp"].ToString();
+                    uq.ServerPass = FlagUpload_Dt[j]["ServerPass"].ToString();
+                    uq.ServerUser = FlagUpload_Dt[j]["ServerUser"].ToString();
+                    UpQList.Add(uq);
+                }
+                Flag.UploadQueue = UpQList;
+                Lst.Add(Flag);
+            }
+
+            return Lst;
+        }
         public int SetFlagQueueStart(string FlagId)
         {
             ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();

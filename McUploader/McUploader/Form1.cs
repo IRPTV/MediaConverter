@@ -284,7 +284,6 @@ namespace McUploader
         {
             btnStart_Click(null, null);
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             if (this.Height == 271)
