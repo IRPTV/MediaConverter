@@ -33,30 +33,30 @@ namespace Feeder
                 openFileDialog1.FileName="";
                 label2.Text = "Please select file";
 
+                if (File.Exists(_DestFile))
+                {
+                    //Call Service:
+                    WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
 
-                //Call Service:
+                    request.Method = "POST";
 
+                    string postData = "FileName=" + _DateDir + "\\" + _FileName + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim();
 
-                WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
+                    byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
-                request.Method = "POST";
+                    request.ContentType = "application/x-www-form-urlencoded";
 
-                string postData = "FileName=" + _DateDir + "\\" + _FileName + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim();
+                    request.ContentLength = byteArray.Length;
 
-                byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+                    Stream dataStream = request.GetRequestStream();
 
-                request.ContentType = "application/x-www-form-urlencoded";
+                    dataStream.Write(byteArray, 0, byteArray.Length);
 
-                request.ContentLength = byteArray.Length;
+                    dataStream.Close();
 
-                Stream dataStream = request.GetRequestStream();
-
-                dataStream.Write(byteArray, 0, byteArray.Length);
-
-                dataStream.Close();
-
-                WebResponse response = request.GetResponse();
-                MessageBox.Show("File added to convert queue","Upload",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                    WebResponse response = request.GetResponse();
+                    MessageBox.Show("File added to convert queue", "Upload", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
 
             }));
 

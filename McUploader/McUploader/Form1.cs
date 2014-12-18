@@ -33,7 +33,7 @@ namespace McUploader
             // HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Ttl);
 
 
-            WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Ttl +"/"+ System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
+            WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Ttl +"/"+ System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             //request.Timeout = Timeout.Infinite;
             //request. = true;
             // try

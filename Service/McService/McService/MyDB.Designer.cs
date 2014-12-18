@@ -3489,10 +3489,11 @@ FROM            Categories INNER JOIN
                          Queue_Convert ON Categories_Profiles.CtPtblId = Queue_Convert.CpId INNER JOIN
                          Files ON Queue_Convert.FileId = Files.FId INNER JOIN
                          Queue_Upload ON Queue_Convert.QtblId = Queue_Upload.QcId AND Categories_Path.PathId = Queue_Upload.CatPathId
-WHERE        (Queue_Upload.Uploaded = 0)
+WHERE        (Queue_Upload.Uploaded = 0) and (Categories.ServerCode=@SrvCode)
 ORDER BY Queue_Upload.Retry";
             this._commandCollection[14].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[14].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TopCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[14].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SrvCode", global::System.Data.SqlDbType.SmallInt, 2, global::System.Data.ParameterDirection.Input, 0, 0, "ServerCode", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[15] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[15].Connection = this.Connection;
             this._commandCollection[15].CommandText = @"SELECT        TOP (@TopCount) Categories_Path.ServerIp, Categories_Path.ServerUser, Categories_Path.ServerPass, Categories_Path.DestDirectory, 
@@ -3801,9 +3802,15 @@ WHERE        (Files.FId = @fid)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Select, false)]
-        public virtual MyDB.DataTable1DataTable Select_Upload_Q(int TopCount) {
+        public virtual MyDB.DataTable1DataTable Select_Upload_Q(int TopCount, global::System.Nullable<short> SrvCode) {
             this.Adapter.SelectCommand = this.CommandCollection[14];
             this.Adapter.SelectCommand.Parameters[0].Value = ((int)(TopCount));
+            if ((SrvCode.HasValue == true)) {
+                this.Adapter.SelectCommand.Parameters[1].Value = ((short)(SrvCode.Value));
+            }
+            else {
+                this.Adapter.SelectCommand.Parameters[1].Value = global::System.DBNull.Value;
+            }
             MyDB.DataTable1DataTable dataTable = new MyDB.DataTable1DataTable();
             this.Adapter.Fill(dataTable);
             return dataTable;

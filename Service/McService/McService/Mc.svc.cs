@@ -307,10 +307,10 @@ namespace McService
 
         }
 
-        public List<UploadQueue> GetUploadQueue(string TopCount)
+        public List<UploadQueue> GetUploadQueue(string TopCount, string ServerCode)
         {
             ServiceTableAdapter Upload_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Upload_Dt = Upload_Ta.Select_Upload_Q(int.Parse(TopCount));
+            MyDB.DataTable1DataTable Upload_Dt = Upload_Ta.Select_Upload_Q(int.Parse(TopCount),short.Parse(ServerCode));
             List<UploadQueue> Lst = new List<UploadQueue>();
 
             for (int i = 0; i < Upload_Dt.Rows.Count; i++)

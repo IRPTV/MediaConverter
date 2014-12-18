@@ -108,8 +108,8 @@ namespace McService
         [WebInvoke(Method = "GET",
         ResponseFormat = WebMessageFormat.Json,
         BodyStyle = WebMessageBodyStyle.Bare,
-        UriTemplate = "files/upload/{TopCount}")]
-        List<UploadQueue> GetUploadQueue(string TopCount);
+        UriTemplate = "files/upload/{TopCount}/{ServerCode}")]
+        List<UploadQueue> GetUploadQueue(string TopCount, string ServerCode);
 
 
 
