@@ -68,8 +68,8 @@ namespace Feeder
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "mp4 files (*.mp4)|*.mp4|Avi files (*.avi)|*.avi";
-            openFileDialog1.Title = "Select Avi Or Mp4 Files";
+            openFileDialog1.Filter = "mpg files (*.mpg)|*.mpg|mp4 files (*.mp4)|*.mp4|Avi files (*.avi)|*.avi";
+            openFileDialog1.Title = "Select Avi Or Mp4 Or Mpg Files";
             openFileDialog1.Multiselect = true;
             openFileDialog1.ShowDialog();
         }

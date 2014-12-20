@@ -36,129 +36,145 @@ namespace MCConverter
         }
         protected void QueueCount()
         {
-            string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
-            string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1000/false/" + ProfId +
-                "/" +System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             try
             {
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
+                string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
+                string Json = "";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1000/false/" + ProfId +
+                    "/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
+                try
                 {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                    Json = reader.ReadToEnd();
+                    WebResponse response = request.GetResponse();
+                    using (Stream responseStream = response.GetResponseStream())
+                    {
+                        StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                        Json = reader.ReadToEnd();
+                    }
                 }
+                catch (WebException ex)
+                {
+                    WebResponse errorResponse = ex.Response;
+                    using (Stream responseStream = errorResponse.GetResponseStream())
+                    {
+                        StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                        String errorText = reader.ReadToEnd();
+                    }
+                }
+
+
+                List<ConvertQueue> ConvertList = JsonConvert.DeserializeObject<List<ConvertQueue>>(Json);
+                label2.Text = "Queue: [" + ConvertList.Count + "] Files";
             }
-            catch (WebException ex)
+            catch (Exception EXp)
             {
-                WebResponse errorResponse = ex.Response;
-                using (Stream responseStream = errorResponse.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-                    String errorText = reader.ReadToEnd();
-                }
+                richTextBox1.Text += (EXp) + " \n";
+                richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                richTextBox1.ScrollToCaret();
             }
-
-
-            List<ConvertQueue> ConvertList = JsonConvert.DeserializeObject<List<ConvertQueue>>(Json);
-            label2.Text = "Queue: ["+ConvertList.Count+"] Files";
         }
         protected void Convert()
         {
-            QueueCount();
-            string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
-            string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1/false/" + ProfId + "/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             try
             {
-                WebResponse response = request.GetResponse();
-                using (Stream responseStream = response.GetResponseStream())
+                QueueCount();
+                string ProfId = System.Configuration.ConfigurationSettings.AppSettings["ProfileId"].Trim();
+                string Json = "";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1/false/" + ProfId + "/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
+                try
                 {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
-                    Json = reader.ReadToEnd();
-                }
-            }
-            catch (WebException ex)
-            {
-                WebResponse errorResponse = ex.Response;
-                using (Stream responseStream = errorResponse.GetResponseStream())
-                {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-                    String errorText = reader.ReadToEnd();
-                }
-            }
-
-
-            List<ConvertQueue> ConvertList = JsonConvert.DeserializeObject<List<ConvertQueue>>(Json);
-
-            foreach (ConvertQueue item in ConvertList)
-            {
-                progressBar1.Value = 0;
-                label1.Text = "0%";
-                richTextBox1.Text = "";
-
-                string SourceFile = item.SrcDirectory+"logo\\" + item.Filename;
-                string[] SrcDir = SourceFile.Split('\\');
-               
-                if (File.Exists(SourceFile))
-                {
-                    string DestFile = item.ConvertDirectory +SrcDir[SrcDir.Length-2]+"\\"+ Path.GetFileNameWithoutExtension(SourceFile)+ item.FilenameSuffix;
-                    string Command = item.Command.Replace("{in}", SourceFile).Replace("{out}", DestFile);
-
-                    if(!Directory.Exists(Path.GetDirectoryName(DestFile)))
+                    WebResponse response = request.GetResponse();
+                    using (Stream responseStream = response.GetResponseStream())
                     {
-                        Directory.CreateDirectory(Path.GetDirectoryName(DestFile));
+                        StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+                        Json = reader.ReadToEnd();
                     }
-
-                    Process proc = new Process(); if (Environment.Is64BitOperatingSystem)
+                }
+                catch (WebException ex)
+                {
+                    WebResponse errorResponse = ex.Response;
+                    using (Stream responseStream = errorResponse.GetResponseStream())
                     {
-                        proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg64";
+                        StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                        String errorText = reader.ReadToEnd();
+                    }
+                }
+                
+                List<ConvertQueue> ConvertList = JsonConvert.DeserializeObject<List<ConvertQueue>>(Json);
+
+                foreach (ConvertQueue item in ConvertList)
+                {
+                    progressBar1.Value = 0;
+                    label1.Text = "0%";
+                    richTextBox1.Text = "";
+
+                    string SourceFile = item.SrcDirectory + "logo\\" + item.Filename;
+                    string[] SrcDir = SourceFile.Split('\\');
+
+                    if (File.Exists(SourceFile))
+                    {
+                        string DestFile = item.ConvertDirectory + SrcDir[SrcDir.Length - 2] + "\\" + Path.GetFileNameWithoutExtension(SourceFile) + item.FilenameSuffix;
+                        string Command = item.Command.Replace("{in}", SourceFile).Replace("{out}", DestFile);
+
+                        if (!Directory.Exists(Path.GetDirectoryName(DestFile)))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(DestFile));
+                        }
+
+                        Process proc = new Process(); if (Environment.Is64BitOperatingSystem)
+                        {
+                            proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg64";
+                        }
+                        else
+                        {
+                            proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg32";
+                        }
+                        proc.StartInfo.Arguments = Command;
+                        proc.StartInfo.RedirectStandardError = true;
+                        proc.StartInfo.UseShellExecute = false;
+                        proc.StartInfo.CreateNoWindow = true;
+                        proc.EnableRaisingEvents = true;
+
+                        proc.Start();
+
+                        HttpWebRequest ReqStart = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/start");
+                        ReqStart.GetResponse();
+
+                        StreamReader reader = proc.StandardError;
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (richTextBox1.Lines.Length > 5)
+                            {
+                                richTextBox1.Text = "";
+                            }
+
+                            FindDuration(line);
+                            richTextBox1.Text += (line) + " \n";
+                            richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                            richTextBox1.ScrollToCaret();
+                            Application.DoEvents();
+                        }
+                        HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/done");
+                        ReqDone.GetResponse();
+
+
+                        progressBar1.Value = progressBar1.Maximum;
+                        label1.Text = "100%";
                     }
                     else
                     {
-                        proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg32";
-                    }
-                    proc.StartInfo.Arguments = Command;
-                    proc.StartInfo.RedirectStandardError = true;
-                    proc.StartInfo.UseShellExecute = false;
-                    proc.StartInfo.CreateNoWindow = true;
-                    proc.EnableRaisingEvents = true;
-
-                    proc.Start();
-
-                    HttpWebRequest ReqStart = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/start");
-                    ReqStart.GetResponse();
-
-                    StreamReader reader = proc.StandardError;
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (richTextBox1.Lines.Length > 5)
-                        {
-                            richTextBox1.Text = "";
-                        }
-
-                        FindDuration(line);
-                        richTextBox1.Text += (line) + " \n";
+                        richTextBox1.Text += SourceFile + " : Is not exist" + " \n";
                         richTextBox1.SelectionStart = richTextBox1.Text.Length;
                         richTextBox1.ScrollToCaret();
                         Application.DoEvents();
                     }
-                    HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/done");
-                    ReqDone.GetResponse();
-
-
-                    progressBar1.Value = progressBar1.Maximum;
-                    label1.Text = "100%";
                 }
-                else
-                {
-                    richTextBox1.Text += SourceFile + " : Is not exist" + " \n";
-                    richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                    richTextBox1.ScrollToCaret();
-                    Application.DoEvents();
-
-                }
+            }
+            catch (Exception Exp)
+            {
+                richTextBox1.Text += Exp;
+                richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                richTextBox1.ScrollToCaret();
             }
         }
         protected void FindDuration(string Str)
