@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Web;
 using System.Collections.Specialized;
+using System.Web.Configuration;
 
 namespace McService
 {
@@ -473,8 +474,8 @@ namespace McService
             for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
             {
                 RepositoryFiles itm = new RepositoryFiles();
-                itm.Filename = "http://192.168.10.26:81/SOURCE/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
-                itm.Thumbnail = "http://192.168.10.26:81/Converted/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/SOURCE/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
+                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/Converted/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
                 itm.Id = Cnvrt_Dt[i]["FId"].ToString();
 
                 
@@ -500,8 +501,8 @@ namespace McService
             if (Cnvrt_Dt.Rows.Count == 1)
             {
 
-                itm.Filename = "http://192.168.10.26:81/SOURCE/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/");
-                itm.Thumbnail = "http://192.168.10.26:81/Converted/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/SOURCE/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/");
+                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/Converted/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
                 itm.Id = Cnvrt_Dt[0]["FId"].ToString();
             }
 
