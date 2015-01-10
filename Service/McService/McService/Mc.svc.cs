@@ -157,48 +157,58 @@ namespace McService
 
         public List<ConvertQueue> GetConvertQueue(string TopCount, string Converted, string ProfileID,string ServerCode)
         {
-            ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQueue(int.Parse(TopCount), bool.Parse(Converted), int.Parse(ProfileID), short.Parse(ServerCode));
-            List<ConvertQueue> Lst = new List<ConvertQueue>();
+              List<ConvertQueue> Lst = new List<ConvertQueue>();
+              try
+              {
+                  ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
+                  MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQueue(int.Parse(TopCount), bool.Parse(Converted), int.Parse(ProfileID), short.Parse(ServerCode));
 
-            for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
-            {
+                  for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
+                  {
 
-                ConvertQueue Cnvrt = new ConvertQueue();
-                Cnvrt.Command = Cnvrt_Dt[i]["Command"].ToString();
-                Cnvrt.ConvertDirectory = Cnvrt_Dt[i]["ConvertDirectory"].ToString();
-                Cnvrt.ConvertId = Cnvrt_Dt[i]["ConvertId"].ToString();
-                Cnvrt.FileId = Cnvrt_Dt[i]["FileId"].ToString();
-                Cnvrt.Filename = Cnvrt_Dt[i]["Filename"].ToString();
-                Cnvrt.FilenameSuffix = Cnvrt_Dt[i]["FilenameSuffix"].ToString();
-                Cnvrt.ProfileKind = Cnvrt_Dt[i]["ProfileKind"].ToString();
-                Cnvrt.SrcDirectory = Cnvrt_Dt[i]["SrcDirectory"].ToString();
-                Lst.Add(Cnvrt);
-            }
+                      ConvertQueue Cnvrt = new ConvertQueue();
+                      Cnvrt.Command = Cnvrt_Dt[i]["Command"].ToString();
+                      Cnvrt.ConvertDirectory = Cnvrt_Dt[i]["ConvertDirectory"].ToString();
+                      Cnvrt.ConvertId = Cnvrt_Dt[i]["ConvertId"].ToString();
+                      Cnvrt.FileId = Cnvrt_Dt[i]["FileId"].ToString();
+                      Cnvrt.Filename = Cnvrt_Dt[i]["Filename"].ToString();
+                      Cnvrt.FilenameSuffix = Cnvrt_Dt[i]["FilenameSuffix"].ToString();
+                      Cnvrt.ProfileKind = Cnvrt_Dt[i]["ProfileKind"].ToString();
+                      Cnvrt.SrcDirectory = Cnvrt_Dt[i]["SrcDirectory"].ToString();
+                      Lst.Add(Cnvrt);
+                  }
 
+              }
+              catch
+              {
+              }
             return Lst;
         }
         public List<ConvertQueue> GetConvertQueueAll(string TopCount, string Converted)
-        {
-            ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQAll(int.Parse(TopCount), bool.Parse(Converted));
+        {           
             List<ConvertQueue> Lst = new List<ConvertQueue>();
 
-            for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
+            try
             {
+                ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
+                MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_ConvertQAll(int.Parse(TopCount), bool.Parse(Converted));
+                for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
+                {
 
-                ConvertQueue Cnvrt = new ConvertQueue();
-                Cnvrt.Command = Cnvrt_Dt[i]["Command"].ToString();
-                Cnvrt.ConvertDirectory = Cnvrt_Dt[i]["ConvertDirectory"].ToString();
-                Cnvrt.ConvertId = Cnvrt_Dt[i]["ConvertId"].ToString();
-                Cnvrt.FileId = Cnvrt_Dt[i]["FileId"].ToString();
-                Cnvrt.Filename = Cnvrt_Dt[i]["Filename"].ToString();
-                Cnvrt.FilenameSuffix = Cnvrt_Dt[i]["FilenameSuffix"].ToString();
-                Cnvrt.ProfileKind = Cnvrt_Dt[i]["ProfileKind"].ToString();
-                Cnvrt.SrcDirectory = Cnvrt_Dt[i]["SrcDirectory"].ToString();
-                Lst.Add(Cnvrt);
+                    ConvertQueue Cnvrt = new ConvertQueue();
+                    Cnvrt.Command = Cnvrt_Dt[i]["Command"].ToString();
+                    Cnvrt.ConvertDirectory = Cnvrt_Dt[i]["ConvertDirectory"].ToString();
+                    Cnvrt.ConvertId = Cnvrt_Dt[i]["ConvertId"].ToString();
+                    Cnvrt.FileId = Cnvrt_Dt[i]["FileId"].ToString();
+                    Cnvrt.Filename = Cnvrt_Dt[i]["Filename"].ToString();
+                    Cnvrt.FilenameSuffix = Cnvrt_Dt[i]["FilenameSuffix"].ToString();
+                    Cnvrt.ProfileKind = Cnvrt_Dt[i]["ProfileKind"].ToString();
+                    Cnvrt.SrcDirectory = Cnvrt_Dt[i]["SrcDirectory"].ToString();
+                    Lst.Add(Cnvrt);
+                }
+
             }
-
+            catch { }
             return Lst;
         }
 
@@ -477,7 +487,7 @@ namespace McService
                 itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/SOURCE/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
                 itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/Converted/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
                 itm.Id = Cnvrt_Dt[i]["FId"].ToString();
-
+                itm.relativePath = Cnvrt_Dt[i]["Filename"].ToString();
                 
                 //Get Upload Q:
                 MyDB.DataTable1DataTable FlagUpload_Dt = Ta.SelectUploadQbyFileID(long.Parse(itm.Id));
@@ -672,6 +682,7 @@ namespace McService
         public string Thumbnail { get; set; }
         public string Id { get; set; }
         public string serverPath { get; set; }
+        public string relativePath { get; set; }
 
     }
 }

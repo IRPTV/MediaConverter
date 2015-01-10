@@ -98,7 +98,7 @@ namespace MCConverter
                         String errorText = reader.ReadToEnd();
                     }
                 }
-                
+
                 List<ConvertQueue> ConvertList = JsonConvert.DeserializeObject<List<ConvertQueue>>(Json);
 
                 foreach (ConvertQueue item in ConvertList)
@@ -172,6 +172,7 @@ namespace MCConverter
             }
             catch (Exception Exp)
             {
+                timer1.Enabled = true;
                 richTextBox1.Text += Exp;
                 richTextBox1.SelectionStart = richTextBox1.Text.Length;
                 richTextBox1.ScrollToCaret();
@@ -208,7 +209,7 @@ namespace MCConverter
                     Application.DoEvents();
                 }
                 catch
-                {}
+                { }
 
             }
             if (Str.Contains("fps="))
@@ -221,7 +222,7 @@ namespace MCConverter
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-          label3.Text=  System.Configuration.ConfigurationSettings.AppSettings["ProfileTitle"].Trim();
+            label3.Text = System.Configuration.ConfigurationSettings.AppSettings["ProfileTitle"].Trim();
             timer1.Enabled = true;
         }
         private void timer1_Tick(object sender, EventArgs e)
@@ -230,7 +231,7 @@ namespace MCConverter
         }
         private void button1_Click(object sender, EventArgs e)
         {
-            if(this.Height==248)
+            if (this.Height == 248)
             {
                 this.Height = 103;
             }

@@ -36,16 +36,19 @@ namespace LogoOverlay
         }
         protected void QueueCount()
         {
-            string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/1000/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
             try
             {
+                string Json = "";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/1000/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
+
                 WebResponse response = request.GetResponse();
                 using (Stream responseStream = response.GetResponseStream())
                 {
                     StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
                     Json = reader.ReadToEnd();
                 }
+                List<LogoQueue> ConvertList = JsonConvert.DeserializeObject<List<LogoQueue>>(Json);
+                label2.Text = "Queue: [" + ConvertList.Count + "] Files";
             }
             catch (WebException ex)
             {
@@ -55,11 +58,11 @@ namespace LogoOverlay
                     StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
                     String errorText = reader.ReadToEnd();
                 }
+                label2.Text = "Queue: [0] Files";
             }
 
 
-            List<LogoQueue> ConvertList = JsonConvert.DeserializeObject<List<LogoQueue>>(Json);
-            label2.Text = "Queue: [" + ConvertList.Count + "] Files";
+           
         }
         protected void Convert()
         {
@@ -74,6 +77,97 @@ namespace LogoOverlay
                     StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
                     Json = reader.ReadToEnd();
                 }
+                List<LogoQueue> ConvertList = JsonConvert.DeserializeObject<List<LogoQueue>>(Json);
+
+                foreach (LogoQueue item in ConvertList)
+                {
+                    ClearDirectory(item.SrcDirectory);
+                    ClearDirectory(item.ConvertDirectory);
+
+                    progressBar1.Value = 0;
+                    label1.Text = "0%";
+                    richTextBox1.Text = "";
+
+                    string SourceFile = item.SrcDirectory + item.Filename;
+                    string[] SrcDir = SourceFile.Split('\\');
+
+                    if (File.Exists(SourceFile))
+                    {
+                        string DestFile = item.SrcDirectory + "logo\\" + item.Filename;
+                        string Command = "-i " + "\"" + SourceFile + "\"" + " -vf \"movie=" + item.LogoFile + " [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
+
+                        if (!Directory.Exists(Path.GetDirectoryName(DestFile)))
+                        {
+                            Directory.CreateDirectory(Path.GetDirectoryName(DestFile));
+                        }
+
+                        Process proc = new Process(); if (Environment.Is64BitOperatingSystem)
+                        {
+                            proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg64";
+                        }
+                        else
+                        {
+                            proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg32";
+                        }
+                        proc.StartInfo.Arguments = Command;
+                        proc.StartInfo.RedirectStandardError = true;
+                        proc.StartInfo.UseShellExecute = false;
+                        proc.StartInfo.CreateNoWindow = true;
+                        proc.EnableRaisingEvents = true;
+
+                        proc.Start();
+
+
+                        bool Error = false;
+                        string ErrorLog = "";
+
+                        StreamReader reader = proc.StandardError;
+                        string line;
+
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (richTextBox1.Lines.Length > 5)
+                            {
+                                richTextBox1.Text = "";
+                            }
+                            if (line.ToLower().Contains("not found") || line.ToLower().Contains("invalid"))
+                            {
+                                Error = true;
+                            }
+
+                            ErrorLog += line;
+                            FindDuration(line);
+                            richTextBox1.Text += (line) + " \n";
+                            richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                            richTextBox1.ScrollToCaret();
+                            Application.DoEvents();
+                        }
+
+                        if (Error)
+                        {
+                            if (ErrorLog.Length > 500)
+                            {
+                                ErrorLog = ErrorLog.Substring(0, 499);
+                            }
+                            HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Error?query=" + ErrorLog + "&id=" + item.FileId);
+                            ReqError.GetResponse();
+                        }
+                        else
+                        {
+                            HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/" + item.FileId + "/Done");
+                            ReqDone.GetResponse();
+                        }
+
+                    }
+                    else
+                    {
+                        richTextBox1.Text += SourceFile + " : Is not exist" + " \n";
+                        richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                        richTextBox1.ScrollToCaret();
+                        Application.DoEvents();
+
+                    }
+                }
             }
             catch (WebException ex)
             {
@@ -86,97 +180,7 @@ namespace LogoOverlay
             }
 
 
-            List<LogoQueue> ConvertList = JsonConvert.DeserializeObject<List<LogoQueue>>(Json);
-
-            foreach (LogoQueue item in ConvertList)
-            {
-                ClearDirectory(item.SrcDirectory);
-                ClearDirectory(item.ConvertDirectory);
-
-                progressBar1.Value = 0;
-                label1.Text = "0%";
-                richTextBox1.Text = "";
-
-                string SourceFile = item.SrcDirectory + item.Filename;
-                string[] SrcDir = SourceFile.Split('\\');
-
-                if (File.Exists(SourceFile))
-                {
-                    string DestFile = item.SrcDirectory+"logo\\" + item.Filename;
-                    string Command = "-i " + "\"" + SourceFile + "\"" +" -vf \"movie="+item.LogoFile+" [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
-
-                    if (!Directory.Exists(Path.GetDirectoryName(DestFile)))
-                    {
-                        Directory.CreateDirectory(Path.GetDirectoryName(DestFile));
-                    }
-
-                    Process proc = new Process(); if (Environment.Is64BitOperatingSystem)
-                    {
-                        proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg64";
-                    }
-                    else
-                    {
-                        proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg32";
-                    }
-                    proc.StartInfo.Arguments = Command;
-                    proc.StartInfo.RedirectStandardError = true;
-                    proc.StartInfo.UseShellExecute = false;
-                    proc.StartInfo.CreateNoWindow = true;
-                    proc.EnableRaisingEvents = true;
-
-                    proc.Start();
-
-
-                    bool Error = false;
-                    string ErrorLog = "";
-
-                    StreamReader reader = proc.StandardError;
-                    string line;
-                  
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (richTextBox1.Lines.Length > 5)
-                        {
-                            richTextBox1.Text = "";
-                        }
-                        if (line.ToLower().Contains("not found") || line.ToLower().Contains("invalid"))
-                        {
-                            Error = true;
-                        }
-
-                        ErrorLog += line;
-                        FindDuration(line);
-                        richTextBox1.Text += (line) + " \n";
-                        richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                        richTextBox1.ScrollToCaret();
-                        Application.DoEvents();
-                    }
-
-                    if(Error)
-                    {
-                        if(ErrorLog.Length>500)
-                        {
-                            ErrorLog = ErrorLog.Substring(0, 499);
-                        }
-                        HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Error?query="+ErrorLog+"&id="+item.FileId);
-                        ReqError.GetResponse();
-                    }
-                    else
-                    {
-                        HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/" + item.FileId + "/Done");
-                        ReqDone.GetResponse();
-                    }
-                  
-                }
-                else
-                {
-                    richTextBox1.Text += SourceFile + " : Is not exist" + " \n";
-                    richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                    richTextBox1.ScrollToCaret();
-                    Application.DoEvents();
-
-                }
-            }
+           
 
         }
         protected void FindDuration(string Str)
