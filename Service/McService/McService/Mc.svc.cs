@@ -484,8 +484,8 @@ namespace McService
             for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
             {
                 RepositoryFiles itm = new RepositoryFiles();
-                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/SOURCE/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
-                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/Converted/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
+                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
                 itm.Id = Cnvrt_Dt[i]["FId"].ToString();
                 itm.relativePath = Cnvrt_Dt[i]["Filename"].ToString();
                 
