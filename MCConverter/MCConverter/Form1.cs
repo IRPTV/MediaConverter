@@ -63,7 +63,7 @@ namespace MCConverter
 
 
                 List<ConvertQueue> ConvertList = JsonConvert.DeserializeObject<List<ConvertQueue>>(Json);
-                label2.Text = "Queue: [" + ConvertList.Count + "] Files";
+                label2.Text = "Q:[" + ConvertList.Count + "]";
             }
             catch (Exception EXp)
             {

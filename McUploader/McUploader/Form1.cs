@@ -101,7 +101,7 @@ namespace McUploader
                             Qcount++;
                         }
                     }
-                    label5.Text = "Queue:" + Qcount;
+                    label5.Text = "Q:" + Qcount;
 
                     if (Itm.QuId != null)
                     {

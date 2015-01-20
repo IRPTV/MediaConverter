@@ -48,7 +48,7 @@ namespace LogoOverlay
                     Json = reader.ReadToEnd();
                 }
                 List<LogoQueue> ConvertList = JsonConvert.DeserializeObject<List<LogoQueue>>(Json);
-                label2.Text = "Queue: [" + ConvertList.Count + "] Files";
+                label2.Text = "Q:[" + ConvertList.Count + "]";
             }
             catch (WebException ex)
             {
@@ -58,7 +58,7 @@ namespace LogoOverlay
                     StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
                     String errorText = reader.ReadToEnd();
                 }
-                label2.Text = "Queue: [0] Files";
+                label2.Text = "Q:[0]";
             }
 
 
@@ -66,11 +66,12 @@ namespace LogoOverlay
         }
         protected void Convert()
         {
-            QueueCount();
-            string Json = "";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/logo/1/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
-            try
+           try
             {
+                QueueCount();
+                string Json = "";
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/logo/1/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
+           
                 WebResponse response = request.GetResponse();
                 using (Stream responseStream = response.GetResponseStream())
                 {
@@ -171,12 +172,19 @@ namespace LogoOverlay
             }
             catch (WebException ex)
             {
-                WebResponse errorResponse = ex.Response;
-                using (Stream responseStream = errorResponse.GetResponseStream())
+                try
                 {
-                    StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-                    String errorText = reader.ReadToEnd();
+                    WebResponse errorResponse = ex.Response;
+                    using (Stream responseStream = errorResponse.GetResponseStream())
+                    {
+                        StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                        String errorText = reader.ReadToEnd();
+                    }
                 }
+                catch
+                {
+                }
+              
             }
 
 
@@ -185,44 +193,51 @@ namespace LogoOverlay
         }
         protected void FindDuration(string Str)
         {
-            string TimeCode = "";
-            if (Str.Contains("Duration:"))
+            try
             {
-                TimeCode = Str.Substring(Str.IndexOf("Duration: "), 21).Replace("Duration: ", "").Trim();
-                string[] Times = TimeCode.Split('.')[0].Split(':');
-                double Frames = double.Parse(Times[0].ToString()) * (3600) * (25) +
-                    double.Parse(Times[1].ToString()) * (60) * (25) +
-                    double.Parse(Times[2].ToString()) * (25);
-                progressBar1.Maximum = int.Parse(Frames.ToString());
-            }
-            if (Str.Contains("time="))
-            {
-                try
+                string TimeCode = "";
+                if (Str.Contains("Duration:"))
                 {
-                    string CurTime = "";
-                    CurTime = Str.Substring(Str.IndexOf("time="), 16).Replace("time=", "").Trim();
-                    string[] CTimes = CurTime.Split('.')[0].Split(':');
-                    double CurFrame = double.Parse(CTimes[0].ToString()) * (3600) * (25) +
-                        double.Parse(CTimes[1].ToString()) * (60) * (25) +
-                        double.Parse(CTimes[2].ToString()) * (25);
+                    TimeCode = Str.Substring(Str.IndexOf("Duration: "), 21).Replace("Duration: ", "").Trim();
+                    string[] Times = TimeCode.Split('.')[0].Split(':');
+                    double Frames = double.Parse(Times[0].ToString()) * (3600) * (25) +
+                        double.Parse(Times[1].ToString()) * (60) * (25) +
+                        double.Parse(Times[2].ToString()) * (25);
+                    progressBar1.Maximum = int.Parse(Frames.ToString());
+                }
+                if (Str.Contains("time="))
+                {
+                    try
+                    {
+                        string CurTime = "";
+                        CurTime = Str.Substring(Str.IndexOf("time="), 16).Replace("time=", "").Trim();
+                        string[] CTimes = CurTime.Split('.')[0].Split(':');
+                        double CurFrame = double.Parse(CTimes[0].ToString()) * (3600) * (25) +
+                            double.Parse(CTimes[1].ToString()) * (60) * (25) +
+                            double.Parse(CTimes[2].ToString()) * (25);
 
 
-                    progressBar1.Value = int.Parse(CurFrame.ToString());
+                        progressBar1.Value = int.Parse(CurFrame.ToString());
 
-                    label1.Text = ((progressBar1.Value * 100) / progressBar1.Maximum).ToString() + "%";
+                        label1.Text = ((progressBar1.Value * 100) / progressBar1.Maximum).ToString() + "%";
 
+                        Application.DoEvents();
+                    }
+                    catch
+                    { }
+
+                }
+                if (Str.Contains("fps="))
+                {
+                    string Speed = "";
+                    Speed = Str.Substring(Str.IndexOf("fps="), 8).Replace("fps=", "").Trim();
+                    label4.Text = "Speed: " + (float.Parse(Speed) / 25).ToString() + " X ";
                     Application.DoEvents();
                 }
-                catch
-                { }
-
             }
-            if (Str.Contains("fps="))
+            catch (Exception exp)
             {
-                string Speed = "";
-                Speed = Str.Substring(Str.IndexOf("fps="), 8).Replace("fps=", "").Trim();
-                label4.Text = "Speed: " + (float.Parse(Speed) / 25).ToString() + " X ";
-                Application.DoEvents();
+                richTextBox1.AppendText(exp.Message);
             }
         }
         private void Form1_Load(object sender, EventArgs e)
@@ -233,7 +248,6 @@ namespace LogoOverlay
         {
             btnStart_Click(null, null);
         }
-
         private void button1_Click(object sender, EventArgs e)
         {
             if (this.Height == 248)

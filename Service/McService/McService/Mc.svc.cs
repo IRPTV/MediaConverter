@@ -411,21 +411,30 @@ namespace McService
 
         public List<LogoQueue> GetLogoQueue(string Count, string ServerCode)
         {
-            ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
-            MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_Files_LogoQueue(int.Parse(Count),short.Parse(ServerCode));
             List<LogoQueue> Lst = new List<LogoQueue>();
 
-            for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
+            try
+            {
+                ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
+                MyDB.DataTable1DataTable Cnvrt_Dt = Cnvrt_Ta.Select_Files_LogoQueue(int.Parse(Count), short.Parse(ServerCode));
+
+
+                for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
+                {
+
+                    LogoQueue Cnvrt = new LogoQueue();
+                    Cnvrt.ConvertDirectory = Cnvrt_Dt[i]["ConvertDirectory"].ToString();
+                    Cnvrt.FileId = Cnvrt_Dt[i]["FID"].ToString();
+                    Cnvrt.Filename = Cnvrt_Dt[i]["Filename"].ToString();
+                    Cnvrt.SrcDirectory = Cnvrt_Dt[i]["SrcDirectory"].ToString();
+                    Cnvrt.Logo = Cnvrt_Dt[i]["Logo"].ToString();
+                    Cnvrt.LogoFile = Cnvrt_Dt[i]["LogoFile"].ToString();
+                    Lst.Add(Cnvrt);
+                }
+            }
+            catch
             {
 
-                LogoQueue Cnvrt = new LogoQueue();
-                Cnvrt.ConvertDirectory = Cnvrt_Dt[i]["ConvertDirectory"].ToString();
-                Cnvrt.FileId = Cnvrt_Dt[i]["FID"].ToString();
-                Cnvrt.Filename = Cnvrt_Dt[i]["Filename"].ToString();
-                Cnvrt.SrcDirectory = Cnvrt_Dt[i]["SrcDirectory"].ToString();
-                Cnvrt.Logo = Cnvrt_Dt[i]["Logo"].ToString();
-                Cnvrt.LogoFile = Cnvrt_Dt[i]["LogoFile"].ToString();
-                Lst.Add(Cnvrt);
             }
 
             return Lst;

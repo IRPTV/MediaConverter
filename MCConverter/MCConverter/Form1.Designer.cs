@@ -56,7 +56,7 @@
             this.groupBox3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox3.Location = new System.Drawing.Point(8, 5);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(558, 50);
+            this.groupBox3.Size = new System.Drawing.Size(389, 50);
             this.groupBox3.TabIndex = 30;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Task";
@@ -66,7 +66,7 @@
             this.button1.BackColor = System.Drawing.Color.Green;
             this.button1.Font = new System.Drawing.Font("Arial Black", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(441, 16);
+            this.button1.Location = new System.Drawing.Point(268, 12);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(40, 25);
             this.button1.TabIndex = 16;
@@ -81,7 +81,7 @@
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label3.ForeColor = System.Drawing.Color.Red;
-            this.label3.Location = new System.Drawing.Point(248, 34);
+            this.label3.Location = new System.Drawing.Point(129, 32);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(32, 13);
             this.label3.TabIndex = 15;
@@ -91,13 +91,13 @@
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(192)))));
-            this.label2.Location = new System.Drawing.Point(247, 8);
+            this.label2.Location = new System.Drawing.Point(131, 15);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(131, 24);
+            this.label2.Size = new System.Drawing.Size(20, 13);
             this.label2.TabIndex = 15;
-            this.label2.Text = "Files Queue:";
+            this.label2.Text = "Q:";
             // 
             // label1
             // 
@@ -105,7 +105,7 @@
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(113, 20);
+            this.label1.Location = new System.Drawing.Point(53, 20);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(28, 17);
             this.label1.TabIndex = 10;
@@ -115,7 +115,7 @@
             // 
             this.progressBar1.Location = new System.Drawing.Point(13, 17);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(228, 24);
+            this.progressBar1.Size = new System.Drawing.Size(113, 24);
             this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar1.TabIndex = 9;
             // 
@@ -124,7 +124,7 @@
             this.btnStart.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
             this.btnStart.Font = new System.Drawing.Font("Arial Black", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnStart.ForeColor = System.Drawing.Color.White;
-            this.btnStart.Location = new System.Drawing.Point(487, 16);
+            this.btnStart.Location = new System.Drawing.Point(314, 12);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new System.Drawing.Size(65, 25);
             this.btnStart.TabIndex = 2;
@@ -139,7 +139,7 @@
             this.label4.BackColor = System.Drawing.Color.Transparent;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label4.ForeColor = System.Drawing.Color.Red;
-            this.label4.Location = new System.Drawing.Point(111, 5);
+            this.label4.Location = new System.Drawing.Point(51, 5);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(48, 13);
             this.label4.TabIndex = 14;
@@ -177,7 +177,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(578, 60);
+            this.ClientSize = new System.Drawing.Size(400, 60);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.groupBox3);
