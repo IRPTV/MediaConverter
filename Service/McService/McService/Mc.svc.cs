@@ -495,6 +495,7 @@ namespace McService
                 RepositoryFiles itm = new RepositoryFiles();
                 itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
                 itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+              
                 itm.Id = Cnvrt_Dt[i]["FId"].ToString();
                 itm.relativePath = Cnvrt_Dt[i]["Filename"].ToString();
                 
@@ -503,6 +504,7 @@ namespace McService
                 if(FlagUpload_Dt.Rows.Count>0)
                 {
                     itm.serverPath = FlagUpload_Dt[0]["ServerIp"].ToString();
+                    itm.serverCode = FlagUpload_Dt[0]["ServerCode"].ToString();
                 }               
                 Lst.Add(itm);
             }
@@ -692,6 +694,7 @@ namespace McService
         public string Id { get; set; }
         public string serverPath { get; set; }
         public string relativePath { get; set; }
+        public string serverCode { get; set; }
 
     }
 }
