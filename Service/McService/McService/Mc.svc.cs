@@ -523,7 +523,7 @@ namespace McService
             {
 
                 itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/SOURCE/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/");
-                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/Converted/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
                 itm.Id = Cnvrt_Dt[0]["FId"].ToString();
             }
 
