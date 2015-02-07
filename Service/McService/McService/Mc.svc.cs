@@ -493,8 +493,8 @@ namespace McService
             for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
             {
                 RepositoryFiles itm = new RepositoryFiles();
-                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/");
-                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mpg", ".mp4");
+                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
               
                 itm.Id = Cnvrt_Dt[i]["FId"].ToString();
                 itm.relativePath = Cnvrt_Dt[i]["Filename"].ToString();
@@ -522,8 +522,8 @@ namespace McService
             if (Cnvrt_Dt.Rows.Count == 1)
             {
 
-                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/SOURCE/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/");
-                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg");
+                itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/SOURCE/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mpg", ".mp4");
+                itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[0]["Filename"].ToString().Replace("\\", "/").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
                 itm.Id = Cnvrt_Dt[0]["FId"].ToString();
             }
 
