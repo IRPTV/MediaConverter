@@ -339,7 +339,14 @@ namespace McService
                 Flag.FilenameSuffix = Upload_Dt[i]["FilenameSuffix"].ToString();
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
                 Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
-                Lst.Add(Flag);
+                if (int.Parse(Flag.Retry) > 1000)
+                {
+                    Upload_Ta.Update_Upload_Q_Done(long.Parse(Flag.QuId));
+                }
+                else
+                {
+                    Lst.Add(Flag);
+                }
             }
 
             return Lst;
@@ -365,7 +372,15 @@ namespace McService
                 Flag.FilenameSuffix = Upload_Dt[i]["FilenameSuffix"].ToString();
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
                 Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
-                Lst.Add(Flag);
+
+                if (int.Parse(Flag.Retry) > 1000)
+                {
+                    Upload_Ta.Update_Upload_Q_Done(long.Parse(Flag.QuId));
+                }
+                else
+                {
+                    Lst.Add(Flag);
+                }
             }
 
             return Lst;
