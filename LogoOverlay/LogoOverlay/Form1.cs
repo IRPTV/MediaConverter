@@ -269,12 +269,12 @@ namespace LogoOverlay
                     string[] Files = Directory.GetFiles(directory);
                     foreach (string item in Files)
                     {
-                        if (File.GetCreationTime(directory).AddDays(10) < DateTime.Now)
+                        if (File.GetCreationTime(directory).AddDays(3) < DateTime.Now)
                         {
                             File.Delete(item);
                         }
                     }
-                    if (Directory.GetCreationTime(directory).AddDays(10) < DateTime.Now)
+                    if (Directory.GetCreationTime(directory).AddDays(3) < DateTime.Now)
                     {
                         Directory.Delete(directory, false);
                     }
