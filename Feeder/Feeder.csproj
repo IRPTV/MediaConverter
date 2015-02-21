@@ -36,7 +36,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CopyFiles">
-      <HintPath>..\..\..\..\..\..\Users\Administrator\Desktop\CopyFiles.dll</HintPath>
+      <HintPath>.\CopyFiles.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

@@ -87,7 +87,7 @@ namespace Feeder
                 Application.DoEvents();
 
                 _SourceFile = openFileDialog1.FileName;
-                _FileName = Path.GetFileName(openFileDialog1.FileName);
+                _FileName = Path.GetFileName(openFileDialog1.FileName).Replace(" ","-");
                 _Path = System.Configuration.ConfigurationSettings.AppSettings["DestPath"].Trim() + "\\" + DateTime.Now.ToString("yyyyMMdd");
                 _DestFile = _Path+"\\"+ Path.GetFileName(openFileDialog1.FileName);
                 _DateDir = DateTime.Now.ToString("yyyyMMdd");
