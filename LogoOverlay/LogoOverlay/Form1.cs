@@ -91,7 +91,7 @@ namespace LogoOverlay
 
                     string SourceFile = item.SrcDirectory + item.Filename;
                     string[] SrcDir = SourceFile.Split('\\');
-
+                    label3.Text = item.Filename;
                     if (File.Exists(SourceFile))
                     {
                         string DestFile = item.SrcDirectory + "logo\\" + item.Filename;

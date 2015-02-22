@@ -40,7 +40,7 @@ namespace Feeder
 
                     request.Method = "POST";
 
-                    string postData = "FileName=" + _DateDir + "\\" + _FileName + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim();
+                    string postData = "FileName=" + _DateDir + "\\" + _FileName.Replace(" ", "-") + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim();
 
                     byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
@@ -75,7 +75,7 @@ namespace Feeder
         }
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
-            label2.Text = openFileDialog1.FileName;
+            label2.Text = openFileDialog1.FileName.Replace(" ", "-");
         }
         private void button2_Click(object sender, EventArgs e)
         {
@@ -89,7 +89,7 @@ namespace Feeder
                 _SourceFile = openFileDialog1.FileName;
                 _FileName = Path.GetFileName(openFileDialog1.FileName).Replace(" ","-");
                 _Path = System.Configuration.ConfigurationSettings.AppSettings["DestPath"].Trim() + "\\" + DateTime.Now.ToString("yyyyMMdd");
-                _DestFile = _Path+"\\"+ Path.GetFileName(openFileDialog1.FileName);
+                _DestFile = _Path + "\\" + Path.GetFileName(openFileDialog1.FileName).Replace(" ", "-");
                 _DateDir = DateTime.Now.ToString("yyyyMMdd");
                 
                 

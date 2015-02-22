@@ -106,6 +106,7 @@ namespace MCConverter
                     progressBar1.Value = 0;
                     label1.Text = "0%";
                     richTextBox1.Text = "";
+                    label5.Text = item.Filename;
 
                     string SourceFile = item.SrcDirectory + "logo\\" + item.Filename;
                     string[] SrcDir = SourceFile.Split('\\');
