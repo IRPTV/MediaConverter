@@ -156,8 +156,16 @@ namespace MCConverter
                             Application.DoEvents();
                         }
                         HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/done");
-                        ReqDone.GetResponse();
 
+                        if (File.Exists(DestFile))
+                        {
+                            ReqDone.GetResponse();
+                        }
+
+                        if (DestFile.Contains(".jpg") || DestFile.Contains(".png"))
+                        {
+                            ReqDone.GetResponse();
+                        }
 
                         progressBar1.Value = progressBar1.Maximum;
                         label1.Text = "100%";
