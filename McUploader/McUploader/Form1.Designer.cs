@@ -32,6 +32,15 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.Quid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SourceFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DestFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Progress = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Server = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.User = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Pass = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.DestDir = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Retry = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.btnStart = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -42,15 +51,6 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
-            this.Quid = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SourceFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DestFile = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Progress = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Server = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.User = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Pass = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.DestDir = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Retry = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -92,6 +92,67 @@
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dataGridView1.Size = new System.Drawing.Size(314, 44);
             this.dataGridView1.TabIndex = 0;
+            // 
+            // Quid
+            // 
+            this.Quid.HeaderText = "Quid";
+            this.Quid.Name = "Quid";
+            this.Quid.ReadOnly = true;
+            this.Quid.Visible = false;
+            // 
+            // SourceFile
+            // 
+            this.SourceFile.HeaderText = "SourceFile";
+            this.SourceFile.Name = "SourceFile";
+            this.SourceFile.ReadOnly = true;
+            this.SourceFile.Visible = false;
+            // 
+            // DestFile
+            // 
+            this.DestFile.HeaderText = "DestFile";
+            this.DestFile.Name = "DestFile";
+            this.DestFile.ReadOnly = true;
+            // 
+            // Progress
+            // 
+            this.Progress.HeaderText = "Progress";
+            this.Progress.Name = "Progress";
+            this.Progress.ReadOnly = true;
+            this.Progress.Visible = false;
+            // 
+            // Server
+            // 
+            this.Server.HeaderText = "Server";
+            this.Server.Name = "Server";
+            this.Server.ReadOnly = true;
+            this.Server.Visible = false;
+            // 
+            // User
+            // 
+            this.User.HeaderText = "User";
+            this.User.Name = "User";
+            this.User.ReadOnly = true;
+            this.User.Visible = false;
+            // 
+            // Pass
+            // 
+            this.Pass.HeaderText = "Pass";
+            this.Pass.Name = "Pass";
+            this.Pass.ReadOnly = true;
+            this.Pass.Visible = false;
+            // 
+            // DestDir
+            // 
+            this.DestDir.HeaderText = "DestDir";
+            this.DestDir.Name = "DestDir";
+            this.DestDir.ReadOnly = true;
+            this.DestDir.Visible = false;
+            // 
+            // Retry
+            // 
+            this.Retry.HeaderText = "Retry";
+            this.Retry.Name = "Retry";
+            this.Retry.ReadOnly = true;
             // 
             // btnStart
             // 
@@ -204,67 +265,6 @@
             this.label5.TabIndex = 41;
             this.label5.Text = "Q:";
             // 
-            // Quid
-            // 
-            this.Quid.HeaderText = "Quid";
-            this.Quid.Name = "Quid";
-            this.Quid.ReadOnly = true;
-            this.Quid.Visible = false;
-            // 
-            // SourceFile
-            // 
-            this.SourceFile.HeaderText = "SourceFile";
-            this.SourceFile.Name = "SourceFile";
-            this.SourceFile.ReadOnly = true;
-            this.SourceFile.Visible = false;
-            // 
-            // DestFile
-            // 
-            this.DestFile.HeaderText = "DestFile";
-            this.DestFile.Name = "DestFile";
-            this.DestFile.ReadOnly = true;
-            // 
-            // Progress
-            // 
-            this.Progress.HeaderText = "Progress";
-            this.Progress.Name = "Progress";
-            this.Progress.ReadOnly = true;
-            this.Progress.Visible = false;
-            // 
-            // Server
-            // 
-            this.Server.HeaderText = "Server";
-            this.Server.Name = "Server";
-            this.Server.ReadOnly = true;
-            this.Server.Visible = false;
-            // 
-            // User
-            // 
-            this.User.HeaderText = "User";
-            this.User.Name = "User";
-            this.User.ReadOnly = true;
-            this.User.Visible = false;
-            // 
-            // Pass
-            // 
-            this.Pass.HeaderText = "Pass";
-            this.Pass.Name = "Pass";
-            this.Pass.ReadOnly = true;
-            this.Pass.Visible = false;
-            // 
-            // DestDir
-            // 
-            this.DestDir.HeaderText = "DestDir";
-            this.DestDir.Name = "DestDir";
-            this.DestDir.ReadOnly = true;
-            this.DestDir.Visible = false;
-            // 
-            // Retry
-            // 
-            this.Retry.HeaderText = "Retry";
-            this.Retry.Name = "Retry";
-            this.Retry.ReadOnly = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -284,7 +284,7 @@
             this.MaximizeBox = false;
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Uploader 1.6 2014-11-24";
+            this.Text = "Uploader 1.7 2014-11-24";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

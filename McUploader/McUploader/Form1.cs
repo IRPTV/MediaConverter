@@ -156,79 +156,93 @@ namespace McUploader
 
                             dataGridView1.Rows.Add(Itm.QuId, Source, Dest, "", Itm.ServerIp, Itm.ServerUser, Itm.ServerPass, Itm.DestDirectory, Itm.Retry);
 
-
-                            try
+                            if (!Dest.ToLower().Contains("_youtube.mp4"))
                             {
-                                FtpWebRequest request2 = (FtpWebRequest)FtpWebRequest.Create(Itm.ServerIp + DestDir);
-                                request2.Method = WebRequestMethods.Ftp.MakeDirectory;
-                                request2.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
-
-                                if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
+                                try
                                 {
-                                    request2.UsePassive = true;
+                                    FtpWebRequest request2 = (FtpWebRequest)FtpWebRequest.Create(Itm.ServerIp + DestDir);
+                                    request2.Method = WebRequestMethods.Ftp.MakeDirectory;
+                                    request2.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
 
-                                }
-                                else
-                                {
-                                    request2.UsePassive = false;
-
-                                }
-
-                                request2.UseBinary = true;
-                                request2.KeepAlive = false;
-                                using (var resp = (FtpWebResponse)request2.GetResponse())
-                                {
-                                    if (resp.StatusCode == FtpStatusCode.PathnameCreated)
+                                    if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
                                     {
-                                        Console.WriteLine(resp.StatusCode);
-                                        resp.Close();
+                                        request2.UsePassive = true;
+
+                                    }
+                                    else
+                                    {
+                                        request2.UsePassive = false;
+
+                                    }
+
+                                    request2.UseBinary = true;
+                                    request2.KeepAlive = false;
+                                    using (var resp = (FtpWebResponse)request2.GetResponse())
+                                    {
+                                        if (resp.StatusCode == FtpStatusCode.PathnameCreated)
+                                        {
+                                            Console.WriteLine(resp.StatusCode);
+                                            resp.Close();
+                                        }
                                     }
                                 }
-                            }
-                            catch
-                            {
-
-                            }
-
-
-                            try
-                            {
-                                var ftpWebRequest = (FtpWebRequest)WebRequest.Create(Dest);
-                                ftpWebRequest.Method = WebRequestMethods.Ftp.UploadFile;
-                                ftpWebRequest.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
-
-                                if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
+                                catch
                                 {
-                                    ftpWebRequest.UsePassive = true;
 
                                 }
-                                else
-                                {
-                                    ftpWebRequest.UsePassive = false;
 
-                                }
-                                ftpWebRequest.UseBinary = true;
-                                ftpWebRequest.KeepAlive = false;
-                                using (var inputStream = File.OpenRead(Source))
-                                using (var outputStream = ftpWebRequest.GetRequestStream())
+
+                                try
                                 {
-                                    var buffer = new byte[32 * 1024];
-                                    int readBytesCount;
-                                    long length = inputStream.Length;
-                                    while ((readBytesCount = inputStream.Read(buffer, 0, buffer.Length)) > 0)
+                                    var ftpWebRequest = (FtpWebRequest)WebRequest.Create(Dest);
+                                    ftpWebRequest.Method = WebRequestMethods.Ftp.UploadFile;
+                                    ftpWebRequest.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
+
+                                    if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
                                     {
-                                        outputStream.Write(buffer, 0, readBytesCount);
-                                        Application.DoEvents();
+                                        ftpWebRequest.UsePassive = true;
+
                                     }
-                                    outputStream.Close();
+                                    else
+                                    {
+                                        ftpWebRequest.UsePassive = false;
+
+                                    }
+                                    ftpWebRequest.UseBinary = true;
+                                    ftpWebRequest.KeepAlive = false;
+                                    using (var inputStream = File.OpenRead(Source))
+                                    using (var outputStream = ftpWebRequest.GetRequestStream())
+                                    {
+                                        var buffer = new byte[32 * 1024];
+                                        int readBytesCount;
+                                        long length = inputStream.Length;
+                                        while ((readBytesCount = inputStream.Read(buffer, 0, buffer.Length)) > 0)
+                                        {
+                                            outputStream.Write(buffer, 0, readBytesCount);
+                                            Application.DoEvents();
+                                        }
+                                        outputStream.Close();
+                                    }
+                                    WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
+                                    //ReqDone.Timeout = Timeout.Infinite;
+                                    //ReqDone.KeepAlive = true;
+                                    ReqDone.GetResponse();
                                 }
-                                WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
-                                //ReqDone.Timeout = Timeout.Infinite;
-                                //ReqDone.KeepAlive = true;
-                                ReqDone.GetResponse();
+                                catch
+                                {
+                                }
+
                             }
-                            catch
+                            else
                             {
+                                try
+                                {
+                                    WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
+                                    //ReqDone.Timeout = Timeout.Infinite;
+                                    //ReqDone.KeepAlive = true;
+                                    ReqDone.GetResponse();
+                                }
+                                catch { }
                             }
                         }
                         try
