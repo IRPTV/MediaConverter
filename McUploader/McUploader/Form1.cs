@@ -144,8 +144,6 @@ namespace McUploader
 
                         if (Itm.ServerIp.ToLower().Contains("ftp"))
                         {
-
-
                             //Added to replace % from  sprit filename:
                             Source = Source.Replace("%03d", "").Replace("\\_", "_");
 
@@ -156,93 +154,121 @@ namespace McUploader
 
                             dataGridView1.Rows.Add(Itm.QuId, Source, Dest, "", Itm.ServerIp, Itm.ServerUser, Itm.ServerPass, Itm.DestDirectory, Itm.Retry);
 
-                            if (!Dest.ToLower().Contains("_youtube.mp4"))
+                            if (File.Exists(Source))
                             {
-                                try
+                                if (!Dest.ToLower().Contains("_youtube.mp4"))
                                 {
-                                    FtpWebRequest request2 = (FtpWebRequest)FtpWebRequest.Create(Itm.ServerIp + DestDir);
-                                    request2.Method = WebRequestMethods.Ftp.MakeDirectory;
-                                    request2.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
-
-                                    if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
+                                    try
                                     {
-                                        request2.UsePassive = true;
+                                        FtpWebRequest request2 = (FtpWebRequest)FtpWebRequest.Create(Itm.ServerIp + DestDir);
+                                        request2.Method = WebRequestMethods.Ftp.MakeDirectory;
+                                        request2.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
 
-                                    }
-                                    else
-                                    {
-                                        request2.UsePassive = false;
-
-                                    }
-
-                                    request2.UseBinary = true;
-                                    request2.KeepAlive = false;
-                                    using (var resp = (FtpWebResponse)request2.GetResponse())
-                                    {
-                                        if (resp.StatusCode == FtpStatusCode.PathnameCreated)
+                                        if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
                                         {
-                                            Console.WriteLine(resp.StatusCode);
-                                            resp.Close();
+                                            request2.UsePassive = true;
+
+                                        }
+                                        else
+                                        {
+                                            request2.UsePassive = false;
+
+                                        }
+
+                                        request2.UseBinary = true;
+                                        request2.KeepAlive = false;
+                                        using (var resp = (FtpWebResponse)request2.GetResponse())
+                                        {
+                                            if (resp.StatusCode == FtpStatusCode.PathnameCreated)
+                                            {
+                                                Console.WriteLine(resp.StatusCode);
+                                                resp.Close();
+                                            }
                                         }
                                     }
-                                }
-                                catch
-                                {
-
-                                }
-
-
-                                try
-                                {
-                                    var ftpWebRequest = (FtpWebRequest)WebRequest.Create(Dest);
-                                    ftpWebRequest.Method = WebRequestMethods.Ftp.UploadFile;
-                                    ftpWebRequest.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
-
-                                    if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
+                                    catch
                                     {
-                                        ftpWebRequest.UsePassive = true;
 
                                     }
-                                    else
-                                    {
-                                        ftpWebRequest.UsePassive = false;
 
-                                    }
-                                    ftpWebRequest.UseBinary = true;
-                                    ftpWebRequest.KeepAlive = false;
-                                    using (var inputStream = File.OpenRead(Source))
-                                    using (var outputStream = ftpWebRequest.GetRequestStream())
+
+                                    try
                                     {
-                                        var buffer = new byte[32 * 1024];
-                                        int readBytesCount;
-                                        long length = inputStream.Length;
-                                        while ((readBytesCount = inputStream.Read(buffer, 0, buffer.Length)) > 0)
+                                        var ftpWebRequest = (FtpWebRequest)WebRequest.Create(Dest);
+                                        ftpWebRequest.Method = WebRequestMethods.Ftp.UploadFile;
+                                        ftpWebRequest.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
+
+                                        if (System.Configuration.ConfigurationSettings.AppSettings["FtpActive"].Trim() == "0")
                                         {
-                                            outputStream.Write(buffer, 0, readBytesCount);
-                                            Application.DoEvents();
-                                        }
-                                        outputStream.Close();
-                                    }
-                                    WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
-                                    //ReqDone.Timeout = Timeout.Infinite;
-                                    //ReqDone.KeepAlive = true;
-                                    ReqDone.GetResponse();
-                                }
-                                catch
-                                {
-                                }
+                                            ftpWebRequest.UsePassive = true;
 
+                                        }
+                                        else
+                                        {
+                                            ftpWebRequest.UsePassive = false;
+
+                                        }
+                                        ftpWebRequest.UseBinary = true;
+                                        ftpWebRequest.KeepAlive = false;
+                                        using (var inputStream = File.OpenRead(Source))
+                                        using (var outputStream = ftpWebRequest.GetRequestStream())
+                                        {
+                                            var buffer = new byte[32 * 1024];
+                                            int readBytesCount;
+                                            long length = inputStream.Length;
+                                            while ((readBytesCount = inputStream.Read(buffer, 0, buffer.Length)) > 0)
+                                            {
+                                                outputStream.Write(buffer, 0, readBytesCount);
+                                                Application.DoEvents();
+                                            }
+                                            outputStream.Close();
+                                        }
+                                        WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
+                                        //ReqDone.Timeout = Timeout.Infinite;
+                                        //ReqDone.KeepAlive = true;
+
+                                        
+                                        //Check File is Exist on server:
+                                        var requestExist = (FtpWebRequest)WebRequest.Create(Dest);
+                                        requestExist.Credentials = new NetworkCredential(Itm.ServerUser, Itm.ServerPass);
+                                        requestExist.Method = WebRequestMethods.Ftp.GetFileSize;
+
+                                        try
+                                        {
+                                            FtpWebResponse responseExist = (FtpWebResponse)requestExist.GetResponse();
+                                            ReqDone.GetResponse();
+                                            if (!File.Exists(Source))
+                                            {
+                                                WebRequest reqUndoneConvert = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/convert/" + Itm.QcId + "/undone");
+                                                reqUndoneConvert.GetResponse();
+                                            }
+                                        }
+                                        catch (WebException ex)
+                                        {                                       
+                                            LogWriter("Er Upload FTP:" + ex.Message);
+                                        }
+                                    }
+                                    catch
+                                    {
+                                    }
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
+                                        //ReqDone.Timeout = Timeout.Infinite;
+                                        //ReqDone.KeepAlive = true;
+                                        ReqDone.GetResponse();
+                                    }
+                                    catch { }
+                                }
                             }
                             else
                             {
-                                try
-                                {
-                                    WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
-                                    //ReqDone.Timeout = Timeout.Infinite;
-                                    //ReqDone.KeepAlive = true;
-                                    ReqDone.GetResponse();
-                                }
-                                catch { }
+                                LogWriter("File Not exist:"+Source);
+                                WebRequest reqUndoneConvert = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/convert/"+Itm.QcId+"/undone");
+                                reqUndoneConvert.GetResponse();
                             }
                         }
                         try
@@ -258,17 +284,34 @@ namespace McUploader
                                 LogWriter("S:" + Source);
                                 LogWriter("D:" + Dest);
 
-                                dataGridView1.Rows.Add(Itm.QuId, Source, Dest, "", Itm.ServerIp, Itm.ServerUser, Itm.ServerPass, Itm.DestDirectory, Itm.Retry);
 
-                                if (!Directory.Exists(Itm.ServerIp + DestDir))
+                                dataGridView1.Rows.Add(Itm.QuId, Source, Dest, "", Itm.ServerIp, Itm.ServerUser, Itm.ServerPass, Itm.DestDirectory, Itm.Retry);
+                                if (File.Exists(Source))
                                 {
-                                    Directory.CreateDirectory(Itm.ServerIp + DestDir);
+                                    if (!Directory.Exists(Itm.ServerIp + DestDir))
+                                    {
+                                        Directory.CreateDirectory(Itm.ServerIp + DestDir);
+                                    }
+                                    File.Copy(Source, Dest, true);
+                                    WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
+                                    //ReqDone.Timeout = Timeout.Infinite;
+                                    //ReqDone.KeepAlive = true;
+                                    if (File.Exists(Dest))
+                                    {
+                                        ReqDone.GetResponse();
+                                        if (!File.Exists(Source))
+                                        {
+                                            WebRequest reqUndoneConvert = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/convert/" + Itm.QcId + "/undone");
+                                            reqUndoneConvert.GetResponse();
+                                        }
+                                    }
                                 }
-                                File.Copy(Source, Dest, true);
-                                WebRequest ReqDone = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/upload/" + Itm.QuId + "/done");
-                                //ReqDone.Timeout = Timeout.Infinite;
-                                //ReqDone.KeepAlive = true;
-                                ReqDone.GetResponse();
+                                else
+                                {
+                                    LogWriter("File Not exist:" + Source);
+                                    WebRequest reqUndoneConvert = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Server"].Trim() + "/mc.svc/files/convert/" + Itm.QcId + "/undone");
+                                    reqUndoneConvert.GetResponse();
+                                }
                             }
                         }
                         catch
@@ -331,6 +374,7 @@ namespace McUploader
         public string FilenameSuffix { get; set; }
         public string Retry { get; set; }
         public string DateTime_Insert { get; set; }
+        public string QcId { get; set; }
 
     }
 }

@@ -339,6 +339,8 @@ namespace McService
                 Flag.FilenameSuffix = Upload_Dt[i]["FilenameSuffix"].ToString();
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
                 Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
+                Flag.QcId = Upload_Dt[i]["QcId"].ToString();
+
                 if (int.Parse(Flag.Retry) > 1000)
                 {
                     Upload_Ta.Update_Upload_Q_Done(long.Parse(Flag.QuId));
@@ -372,6 +374,7 @@ namespace McService
                 Flag.FilenameSuffix = Upload_Dt[i]["FilenameSuffix"].ToString();
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
                 Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
+                Flag.QcId = Upload_Dt[i]["QcId"].ToString();
 
                 if (int.Parse(Flag.Retry) > 1000)
                 {
@@ -421,7 +424,12 @@ namespace McService
             while (bytesRead > 0);
             //  file.Close();
         }
-
+        public void SetConvertQueueUnDone(string ConvertId)
+        {
+            ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
+            Cnvrt_Ta.Update_Convert_Tofalse(long.Parse(ConvertId));
+            Cnvrt_Ta.Delete_UndoneUpload(long.Parse(ConvertId));
+        }
         #endregion
 
         public List<LogoQueue> GetLogoQueue(string Count, string ServerCode)
@@ -650,6 +658,9 @@ namespace McService
         public string FilenameSuffix { get; set; }
         public string Retry { get; set; }
         public string DateTime_Insert { get; set; }
+        public string QcId { get; set; }
+
+
     }
     public class UserFiles
     {
