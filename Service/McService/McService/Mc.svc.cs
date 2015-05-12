@@ -217,6 +217,11 @@ namespace McService
             ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
             return Cnvrt_Ta.Convert_Queue_Start(long.Parse(ConvertId));
         }
+        public void SetConvertQueuedelete(string ConvertId)
+        {
+            ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
+            Cnvrt_Ta.Delete_ConvertQ(long.Parse(ConvertId));
+        }
 
         public int SetConvertQueueDone(string ConvertId)
         {

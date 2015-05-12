@@ -172,10 +172,15 @@ namespace MCConverter
                     }
                     else
                     {
+                        HttpWebRequest ReqDelete = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/delete");
+                        ReqDelete.GetResponse();
+                        
                         richTextBox1.Text += SourceFile + " : Is not exist" + " \n";
                         richTextBox1.SelectionStart = richTextBox1.Text.Length;
                         richTextBox1.ScrollToCaret();
                         Application.DoEvents();
+
+
                     }
                 }
             }

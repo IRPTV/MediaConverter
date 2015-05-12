@@ -68,6 +68,12 @@ namespace McService
             BodyStyle = WebMessageBodyStyle.Bare,
             UriTemplate = "files/convert/{ConvertId}/start")]
         int SetConvertQueueStart(string ConvertId);
+        [OperationContract]
+        [WebInvoke(Method = "GET",
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare,
+            UriTemplate = "files/convert/{ConvertId}/delete")]
+        void SetConvertQueuedelete(string ConvertId);
 
         [OperationContract]
         [WebInvoke(Method = "GET",
