@@ -346,7 +346,7 @@ namespace McService
                 Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
                 Flag.QcId = Upload_Dt[i]["QcId"].ToString();
 
-                if (int.Parse(Flag.Retry) > 1000)
+                if (int.Parse(Flag.Retry) > 20)
                 {
                     Upload_Ta.Update_Upload_Q_Done(long.Parse(Flag.QuId));
                 }
