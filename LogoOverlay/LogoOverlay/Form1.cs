@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MediaInfoNET;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -92,8 +93,21 @@ namespace LogoOverlay
                     string SourceFile = item.SrcDirectory + item.Filename;
                     string[] SrcDir = SourceFile.Split('\\');
                     label3.Text = item.Filename;
-                    if (File.Exists(SourceFile))
+                    if (System.IO.File.Exists(SourceFile))
                     {
+
+                        MediaFile videof = new MediaFile(SourceFile);
+                        long Duration = 0;
+                        try
+                        {
+                            Duration = videof.Video[0].DurationMillis;
+                            label5.Text = "Duration:" + videof.Video[0].DurationStringAccurate;
+                        }
+                        catch
+                        {
+                            label5.Text = "Duration Error";
+                        }
+                      
                         string DestFile = item.SrcDirectory + "logo\\" + item.Filename;
                         string Command = "-i " + "\"" + SourceFile + "\"" + " -vf \"movie=" + item.LogoFile + " [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
 
@@ -155,7 +169,7 @@ namespace LogoOverlay
                         }
                         else
                         {
-                            HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/" + item.FileId + "/Done");
+                            HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/" + item.FileId + "/Done/"+Duration.ToString());
                             ReqDone.GetResponse();
                         }
 
@@ -269,9 +283,9 @@ namespace LogoOverlay
                     string[] Files = Directory.GetFiles(directory);
                     foreach (string item in Files)
                     {
-                        if (File.GetCreationTime(directory).AddDays(3) < DateTime.Now)
+                        if (System.IO.File.GetCreationTime(directory).AddDays(3) < DateTime.Now)
                         {
-                            File.Delete(item);
+                            System.IO.File.Delete(item);
                         }
                     }
                     if (Directory.GetCreationTime(directory).AddDays(3) < DateTime.Now)

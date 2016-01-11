@@ -3567,8 +3567,9 @@ WHERE        (Files.FId = @FileID) and Categories_Path.ServerIp like '\\192.168%
             this._commandCollection[21].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Id", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QtblId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[22] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[22].Connection = this.Connection;
-            this._commandCollection[22].CommandText = "UPDATE       Files\r\nSET                Logo = 1\r\nWHERE        (FId = @FileId)";
+            this._commandCollection[22].CommandText = "UPDATE Files\r\nSET       Logo = 1, Duration = @Duration\r\nWHERE (FId = @FileId)";
             this._commandCollection[22].CommandType = global::System.Data.CommandType.Text;
+            this._commandCollection[22].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Duration", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "Duration", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[22].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FileId", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[23] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[23].Connection = this.Connection;
@@ -4182,9 +4183,15 @@ WHERE        (Files.FId = @fid)";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Update, false)]
-        public virtual int Update_Files_LogoDone(long FileId) {
+        public virtual int Update_Files_LogoDone(global::System.Nullable<long> Duration, long FileId) {
             global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[22];
-            command.Parameters[0].Value = ((long)(FileId));
+            if ((Duration.HasValue == true)) {
+                command.Parameters[0].Value = ((long)(Duration.Value));
+            }
+            else {
+                command.Parameters[0].Value = global::System.DBNull.Value;
+            }
+            command.Parameters[1].Value = ((long)(FileId));
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
                         != global::System.Data.ConnectionState.Open)) {

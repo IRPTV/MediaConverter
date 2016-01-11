@@ -468,10 +468,10 @@ namespace McService
             return Lst;
         }
 
-        public int SetLogoDone(string LogoID)
+        public int SetLogoDone(string LogoID,string Duration)
         {
             ServiceTableAdapter Flag_Ta = new ServiceTableAdapter();
-            Flag_Ta.Update_Files_LogoDone(long.Parse(LogoID));
+            Flag_Ta.Update_Files_LogoDone(long.Parse(Duration),long.Parse(LogoID));
             return 1;
         }
         public List<RepositoryFiles> SearchFiles(string Count, string query,string start,string End)
@@ -535,7 +535,8 @@ namespace McService
                 }
                 itm.Id = Cnvrt_Dt[i]["FId"].ToString();
                 itm.relativePath = Cnvrt_Dt[i]["Filename"].ToString();
-                
+                itm.duration = Cnvrt_Dt[i]["duration"].ToString();
+
                 //Get Upload Q:
                 MyDB.DataTable1DataTable FlagUpload_Dt = Ta.SelectUploadQbyFileID(long.Parse(itm.Id));
                 if(FlagUpload_Dt.Rows.Count>0)
@@ -735,6 +736,7 @@ namespace McService
         public string serverPath { get; set; }
         public string relativePath { get; set; }
         public string serverCode { get; set; }
+        public string duration { get; set; }
 
     }
 }

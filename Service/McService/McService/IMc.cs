@@ -162,8 +162,8 @@ namespace McService
         [WebInvoke(Method = "GET",
             ResponseFormat = WebMessageFormat.Json,
             BodyStyle = WebMessageBodyStyle.Bare,
-            UriTemplate = "files/Logo/{LogoID}/Done")]
-        int SetLogoDone(string LogoID);
+            UriTemplate = "files/Logo/{LogoID}/Done/{Duration}")]
+        int SetLogoDone(string LogoID,string Duration);
 
         [OperationContract]
         [WebInvoke(Method = "GET",
