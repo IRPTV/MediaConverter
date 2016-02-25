@@ -180,6 +180,8 @@ namespace LogoOverlay
                         richTextBox1.SelectionStart = richTextBox1.Text.Length;
                         richTextBox1.ScrollToCaret();
                         Application.DoEvents();
+                        HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Error?query=" + ErrorLog + "&id=" + item.FileId);
+                        ReqError.GetResponse();
 
                     }
                 }
@@ -198,7 +200,9 @@ namespace LogoOverlay
                 catch
                 {
                 }
-              
+                HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Error?query=" + ErrorLog + "&id=" + item.FileId);
+                ReqError.GetResponse();
+
             }
 
 
