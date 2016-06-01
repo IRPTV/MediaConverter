@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCConverter", "MCConverter\MCConverter\MCConverter.csproj", "{2205137B-2985-4527-84DC-71FB5A3717AB}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "McService", "Service\McService\McService\McService.csproj", "{7710E2E6-07A4-4CAE-A4D5-E01701314F19}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Feeder", "Feeder\Feeder.csproj", "{9FAD3B12-8D86-4783-9D70-86FC9212919B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeederAuto", "FeederAuto\FeederAuto.csproj", "{2791F13D-0B61-49E3-AA7B-2CCD042234ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{9FAD3B12-8D86-4783-9D70-86FC9212919B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FAD3B12-8D86-4783-9D70-86FC9212919B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FAD3B12-8D86-4783-9D70-86FC9212919B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2791F13D-0B61-49E3-AA7B-2CCD042234ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2791F13D-0B61-49E3-AA7B-2CCD042234ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2791F13D-0B61-49E3-AA7B-2CCD042234ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2791F13D-0B61-49E3-AA7B-2CCD042234ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
