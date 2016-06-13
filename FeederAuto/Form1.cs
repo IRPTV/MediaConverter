@@ -92,7 +92,7 @@ namespace Feeder
                         richTextBox2.ScrollToCaret();
                         Application.DoEvents();
 
-                        _SourceFile = "\\\\192.168.20.155\\Final" + item.FileName + ".mp4";
+                        _SourceFile = "\\\\192.168.20.155\\Final" + item.FileName;
                         _FileName = Path.GetFileName(_SourceFile).Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
                         _Path = System.Configuration.ConfigurationSettings.AppSettings["DestPath"].Trim() + "\\" + DateTime.Now.ToString("yyyyMMdd");
                         _DestFile = _Path + "\\" + Path.GetFileName(_SourceFile).Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
@@ -134,6 +134,7 @@ namespace Feeder
             {
                 timer1.Enabled = true;
             }
+            timer1.Enabled = true;
         }
     }
 }
