@@ -129,14 +129,26 @@ namespace McUploader
                             Source = Source.Replace("E:", ReplaceSourceServer);
                         }
 
+                       
 
-
+                        string Origin = "";
                         string DestDir = "";
                         if (Itm.DestDirectory.ToString().Trim().Length > 0)
                         {
                             DestDir = DateTime.Parse(Itm.DateTime_Insert).ToString(Itm.DestDirectory) + "/";
                         }
+                        else
+                        {
+                            string[] tmpOrg = Itm.Origin.Split(Path.AltDirectorySeparatorChar,
+                                   Path.DirectorySeparatorChar);
+                            for (int i = 1; i < tmpOrg.Length - 1; i++)
+                            {
+                                Origin += tmpOrg[i] + "\\";
+                            }
+                            DestDir = Origin;
+                        }
                         string Dest = Itm.ServerIp + DestDir + Path.GetFileNameWithoutExtension(Itm.SrcDirectory + Itm.Filename) + Itm.FilenameSuffix;
+                      //  MessageBox.Show(Dest);
 
 
 
@@ -375,6 +387,7 @@ namespace McUploader
         public string Retry { get; set; }
         public string DateTime_Insert { get; set; }
         public string QcId { get; set; }
+        public string Origin { get; set; }
 
     }
 }

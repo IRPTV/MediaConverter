@@ -345,7 +345,7 @@ namespace McService
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
                 Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
                 Flag.QcId = Upload_Dt[i]["QcId"].ToString();
-
+                Flag.Origin = Upload_Dt[i]["origin"].ToString();
                 if (int.Parse(Flag.Retry) > 20)
                 {
                     Upload_Ta.Update_Upload_Q_Done(long.Parse(Flag.QuId));
@@ -380,7 +380,7 @@ namespace McService
                 Flag.Retry = Upload_Dt[i]["Retry"].ToString();
                 Flag.DateTime_Insert = Upload_Dt[i]["DateTime_Insert"].ToString();
                 Flag.QcId = Upload_Dt[i]["QcId"].ToString();
-
+                Flag.Origin = Upload_Dt[i]["origin"].ToString();
                 if (int.Parse(Flag.Retry) > 1000)
                 {
                     Upload_Ta.Update_Upload_Q_Done(long.Parse(Flag.QuId));
@@ -584,12 +584,18 @@ namespace McService
 
             string FileName = nvc[0].ToString();
             string UserId = nvc[1].ToString();
+            string Origin = "";
+            try
+            {
+                Origin = nvc[2].ToString();
+            }
+            catch { }
 
 
             ServiceTableAdapter Ta = new ServiceTableAdapter();
             FilesTableAdapter FTa = new FilesTableAdapter();
 
-            int RetId = int.Parse(FTa.Insert_File(FileName, int.Parse(UserId), 0, 0).ToString());
+            int RetId = int.Parse(FTa.Insert_File(FileName, int.Parse(UserId), 0, 0,Origin).ToString());
 
             MyDB.DataTable1DataTable Dt2 = Ta.Select_User_Directory(int.Parse(UserId));
             for (int i = 0; i < Dt2.Rows.Count; i++)
@@ -674,6 +680,7 @@ namespace McService
         public string Retry { get; set; }
         public string DateTime_Insert { get; set; }
         public string QcId { get; set; }
+        public string Origin { get; set; }
 
 
     }

@@ -2893,13 +2893,14 @@ namespace McService.MyDBTableAdapters {
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[1].Connection = this.Connection;
-            this._commandCollection[1].CommandText = "INSERT INTO Files\r\n                         (Filename, UserID, Duration, FileSize" +
-                ")\r\nVALUES        (@Filename,@UserID,@Duration,@FileSize)\r\nselect @@identity";
+            this._commandCollection[1].CommandText = "INSERT INTO Files\r\n             (Filename, UserID, Duration, FileSize, Origin)\r\nV" +
+                "ALUES (@Filename,@UserID,@Duration,@FileSize,@origin)\r\n SELECT @@identity";
             this._commandCollection[1].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Filename", global::System.Data.SqlDbType.NVarChar, 500, global::System.Data.ParameterDirection.Input, 0, 0, "Filename", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserID", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "UserID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@Duration", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "Duration", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@FileSize", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FileSize", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
+            this._commandCollection[1].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@origin", global::System.Data.SqlDbType.NVarChar, 2147483647, global::System.Data.ParameterDirection.Input, 0, 0, "Origin", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[2] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[2].Connection = this.Connection;
             this._commandCollection[2].CommandText = @"SELECT        Files.Filename, Files.Duration, Files.FileSize, Files.UserID, Queue_Convert.DateTime_Insert AS Convert_Datetime_Insert, 
@@ -3087,7 +3088,7 @@ ORDER BY Files.FId DESC";
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
         [global::System.ComponentModel.Design.HelpKeywordAttribute("vs.data.TableAdapter")]
         [global::System.ComponentModel.DataObjectMethodAttribute(global::System.ComponentModel.DataObjectMethodType.Insert, false)]
-        public virtual object Insert_File(string Filename, global::System.Nullable<int> UserID, global::System.Nullable<long> Duration, global::System.Nullable<long> FileSize) {
+        public virtual object Insert_File(string Filename, global::System.Nullable<int> UserID, global::System.Nullable<long> Duration, global::System.Nullable<long> FileSize, string origin) {
             global::System.Data.SqlClient.SqlCommand command = this.CommandCollection[1];
             if ((Filename == null)) {
                 command.Parameters[0].Value = global::System.DBNull.Value;
@@ -3112,6 +3113,12 @@ ORDER BY Files.FId DESC";
             }
             else {
                 command.Parameters[3].Value = global::System.DBNull.Value;
+            }
+            if ((origin == null)) {
+                command.Parameters[4].Value = global::System.DBNull.Value;
+            }
+            else {
+                command.Parameters[4].Value = ((string)(origin));
             }
             global::System.Data.ConnectionState previousConnectionState = command.Connection.State;
             if (((command.Connection.State & global::System.Data.ConnectionState.Open) 
@@ -3493,33 +3500,32 @@ where Queue_Flag.isdone=@Done and (Categories.ServerCode=@SrvCode)";
             this._commandCollection[15].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SrvCode", global::System.Data.SqlDbType.SmallInt, 2, global::System.Data.ParameterDirection.Input, 0, 0, "ServerCode", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[16] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[16].Connection = this.Connection;
-            this._commandCollection[16].CommandText = @"SELECT        TOP (@TopCount) Categories_Path.ServerIp, Categories_Path.ServerUser, Categories_Path.ServerPass, Categories_Path.DestDirectory, 
-                         Categories_Path.Priority, Profiles.FilenameSuffix, Queue_Upload.QuId, Categories.SrcDirectory, Categories.ConvertDirectory, Files.Filename, 
-                         Queue_Upload.CatPathId, Queue_Upload.Retry, Queue_Convert.DateTime_Insert,Queue_Upload.QcId
-FROM            Categories INNER JOIN
-                         Categories_Path ON Categories.CtgId = Categories_Path.CatId INNER JOIN
-                         Categories_Profiles ON Categories.CtgId = Categories_Profiles.CatId INNER JOIN
-                         Profiles ON Categories_Profiles.ProfId = Profiles.Id INNER JOIN
-                         Queue_Convert ON Categories_Profiles.CtPtblId = Queue_Convert.CpId INNER JOIN
-                         Files ON Queue_Convert.FileId = Files.FId INNER JOIN
-                         Queue_Upload ON Queue_Convert.QtblId = Queue_Upload.QcId AND Categories_Path.PathId = Queue_Upload.CatPathId
-WHERE        (Queue_Upload.Uploaded = 0) and (Categories.ServerCode=@SrvCode)
+            this._commandCollection[16].CommandText = @"SELECT TOP (@TopCount) Categories_Path.ServerIp, Categories_Path.ServerUser, Categories_Path.ServerPass, Categories_Path.DestDirectory, Categories_Path.Priority, Profiles.FilenameSuffix, Queue_Upload.QuId, Categories.SrcDirectory, Categories.ConvertDirectory, 
+             Files.Filename, Queue_Upload.CatPathId, Queue_Upload.Retry, Queue_Convert.DateTime_Insert, Queue_Upload.QcId, Files.Origin
+FROM   Categories INNER JOIN
+             Categories_Path ON Categories.CtgId = Categories_Path.CatId INNER JOIN
+             Categories_Profiles ON Categories.CtgId = Categories_Profiles.CatId INNER JOIN
+             Profiles ON Categories_Profiles.ProfId = Profiles.Id INNER JOIN
+             Queue_Convert ON Categories_Profiles.CtPtblId = Queue_Convert.CpId INNER JOIN
+             Files ON Queue_Convert.FileId = Files.FId INNER JOIN
+             Queue_Upload ON Queue_Convert.QtblId = Queue_Upload.QcId AND Categories_Path.PathId = Queue_Upload.CatPathId
+WHERE (Queue_Upload.Uploaded = 0) AND (Categories.ServerCode = @SrvCode)
 ORDER BY Queue_Upload.Retry";
             this._commandCollection[16].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[16].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TopCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[16].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@SrvCode", global::System.Data.SqlDbType.SmallInt, 2, global::System.Data.ParameterDirection.Input, 0, 0, "ServerCode", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[17] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[17].Connection = this.Connection;
-            this._commandCollection[17].CommandText = @"SELECT        TOP (@TopCount) Categories_Path.ServerIp, Categories_Path.ServerUser, Categories_Path.ServerPass, Categories_Path.DestDirectory, Categories_Path.Priority, Profiles.FilenameSuffix, Queue_Upload.QuId, 
-                         Categories.SrcDirectory, Categories.ConvertDirectory, Files.Filename, Queue_Upload.CatPathId, Queue_Upload.Retry, Queue_Convert.DateTime_Insert, Queue_Upload.QcId
-FROM            Categories INNER JOIN
-                         Categories_Path ON Categories.CtgId = Categories_Path.CatId INNER JOIN
-                         Categories_Profiles ON Categories.CtgId = Categories_Profiles.CatId INNER JOIN
-                         Profiles ON Categories_Profiles.ProfId = Profiles.Id INNER JOIN
-                         Queue_Convert ON Categories_Profiles.CtPtblId = Queue_Convert.CpId INNER JOIN
-                         Files ON Queue_Convert.FileId = Files.FId INNER JOIN
-                         Queue_Upload ON Queue_Convert.QtblId = Queue_Upload.QcId AND Categories_Path.PathId = Queue_Upload.CatPathId
-WHERE        (Queue_Upload.Uploaded = 0) AND (Categories_Path.ServerIp LIKE @IP) AND (Categories.ServerCode = @SrvCode)
+            this._commandCollection[17].CommandText = @"SELECT TOP (@TopCount) Categories_Path.ServerIp, Categories_Path.ServerUser, Categories_Path.ServerPass, Categories_Path.DestDirectory, Categories_Path.Priority, Profiles.FilenameSuffix, Queue_Upload.QuId, Categories.SrcDirectory, Categories.ConvertDirectory, 
+             Files.Filename, Queue_Upload.CatPathId, Queue_Upload.Retry, Queue_Convert.DateTime_Insert, Queue_Upload.QcId, Files.Origin
+FROM   Categories INNER JOIN
+             Categories_Path ON Categories.CtgId = Categories_Path.CatId INNER JOIN
+             Categories_Profiles ON Categories.CtgId = Categories_Profiles.CatId INNER JOIN
+             Profiles ON Categories_Profiles.ProfId = Profiles.Id INNER JOIN
+             Queue_Convert ON Categories_Profiles.CtPtblId = Queue_Convert.CpId INNER JOIN
+             Files ON Queue_Convert.FileId = Files.FId INNER JOIN
+             Queue_Upload ON Queue_Convert.QtblId = Queue_Upload.QcId AND Categories_Path.PathId = Queue_Upload.CatPathId
+WHERE (Queue_Upload.Uploaded = 0) AND (Categories_Path.ServerIp LIKE @IP) AND (Categories.ServerCode = @SrvCode)
 ORDER BY Queue_Convert.DateTime_Insert, Queue_Upload.Retry";
             this._commandCollection[17].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[17].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@TopCount", global::System.Data.SqlDbType.Int, 0, global::System.Data.ParameterDirection.Input, 0, 0, "", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));

@@ -105,7 +105,7 @@ namespace McService
                 result += ", \"fileName\": \"" + RetfileName + "\"}";
 
                 FilesTableAdapter FTa = new FilesTableAdapter();
-                int RetId = int.Parse(FTa.Insert_File(DateTime.Now.ToString("yyyyMMdd") + "\\" + fileName, UserId, 0, 0).ToString());
+                int RetId = int.Parse(FTa.Insert_File(DateTime.Now.ToString("yyyyMMdd") + "\\" + fileName, UserId, 0, 0, Request.Files[0].FileName).ToString());
                 MyDB.DataTable1DataTable Dt2 = Ta.Select_User_Directory(UserId);
                 for (int i = 0; i < Dt2.Rows.Count; i++)
                 {

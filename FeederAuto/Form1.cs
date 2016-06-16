@@ -39,7 +39,7 @@ namespace Feeder
 
                             request.Method = "POST";
 
-                            string postData = "FileName=" + _DateDir + "\\" + _FileName.Replace(" ", "-") + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim();
+                            string postData = "FileName=" + _DateDir + "\\" + _FileName.Replace(" ", "-") + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim()+ "&Origin="+_SourceFile;
 
                             byte[] byteArray = Encoding.UTF8.GetBytes(postData);
 
@@ -92,7 +92,9 @@ namespace Feeder
                         richTextBox2.ScrollToCaret();
                         Application.DoEvents();
 
-                        _SourceFile = "\\\\192.168.20.155\\Final" + item.FileName;
+                        //_SourceFile = "\\\\192.168.20.155\\Final" + item.FileName;
+                        _SourceFile = item.FileName;
+
                         _FileName = Path.GetFileName(_SourceFile).Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
                         _Path = System.Configuration.ConfigurationSettings.AppSettings["DestPath"].Trim() + "\\" + DateTime.Now.ToString("yyyyMMdd");
                         _DestFile = _Path + "\\" + Path.GetFileName(_SourceFile).Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
