@@ -139,13 +139,12 @@ namespace McUploader
                         }
                         else
                         {
-                            string[] tmpOrg = Itm.Origin.Split(Path.AltDirectorySeparatorChar,
-                                   Path.DirectorySeparatorChar);
+                            string[] tmpOrg = Itm.Origin.Split(new string[] { "\\" },100,StringSplitOptions.RemoveEmptyEntries);
                             for (int i = 1; i < tmpOrg.Length - 1; i++)
                             {
                                 Origin += tmpOrg[i] + "\\";
                             }
-                            DestDir = Origin;
+                            DestDir = Origin.Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
                         }
                         string Dest = Itm.ServerIp + DestDir + Path.GetFileNameWithoutExtension(Itm.SrcDirectory + Itm.Filename) + Itm.FilenameSuffix;
                       //  MessageBox.Show(Dest);
