@@ -67,6 +67,7 @@ namespace LogoOverlay
         }
         protected void Convert()
         {
+                        string ErrorLog = "";
            try
             {
                 QueueCount();
@@ -134,7 +135,6 @@ namespace LogoOverlay
 
 
                         bool Error = false;
-                        string ErrorLog = "";
 
                         StreamReader reader = proc.StandardError;
                         string line;
@@ -188,20 +188,20 @@ namespace LogoOverlay
             }
             catch (WebException ex)
             {
-                try
-                {
-                    WebResponse errorResponse = ex.Response;
-                    using (Stream responseStream = errorResponse.GetResponseStream())
-                    {
-                        StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
-                        String errorText = reader.ReadToEnd();
-                    }
-                }
-                catch
-                {
-                }
-                HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Error?query=" + ErrorLog + "&id=" + item.FileId);
-                ReqError.GetResponse();
+                //try
+                //{
+                //    WebResponse errorResponse = ex.Response;
+                //    using (Stream responseStream = errorResponse.GetResponseStream())
+                //    {
+                //        StreamReader reader = new StreamReader(responseStream, Encoding.GetEncoding("utf-8"));
+                //        String errorText = reader.ReadToEnd();
+                //    }
+                //}
+                //catch
+                //{
+                //}
+                //HttpWebRequest ReqError = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Error?query=" + ErrorLog + "&id=" + item.FileId);
+                //ReqError.GetResponse();
 
             }
 
