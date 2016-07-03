@@ -68,6 +68,7 @@ namespace Feeder
         void Temp_EV_copyCanceled(List<CopyFiles.CopyFiles.ST_CopyFileDetails> filescopied)
         {
             MessageBox.Show("عملیات کپی متوقف شد");
+            timer1.Enabled = true;
         }
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -104,19 +105,20 @@ namespace Feeder
                         label1.Text = DateTime.Now.ToString();
 
                         DirectoryInfo Dir = new DirectoryInfo(_Path);
-                        if (!Dir.Exists)
-                        {
-                            Dir.Create();
-                            richTextBox2.Text += "Temp Directory Created: " + Dir.ToString() + "\n";
-                            richTextBox2.SelectionStart = richTextBox2.Text.Length;
-                            richTextBox2.ScrollToCaret();
-                            Application.DoEvents();
-                        }
-                        richTextBox2.Text += "Start Copy To Local: " + _SourceFile.ToString() + "\n";
-                        richTextBox2.SelectionStart = richTextBox2.Text.Length;
-                        richTextBox2.ScrollToCaret();
-                        Application.DoEvents();
-
+                        //if (!Dir.Exists)
+                        //{
+                        //    Dir.Create();
+                        //    richTextBox2.Text += "Temp Directory Created: " + Dir.ToString() + "\n";
+                        //    richTextBox2.SelectionStart = richTextBox2.Text.Length;
+                        //    richTextBox2.ScrollToCaret();
+                        //    Application.DoEvents();
+                        //}
+                        //richTextBox2.Text += "Start Copy To Local: " + _SourceFile.ToString() + "\n";
+                        //richTextBox2.SelectionStart = richTextBox2.Text.Length;
+                        //richTextBox2.ScrollToCaret();
+                        //Application.DoEvents();
+                      //  if (File.Exists(_SourceFile.Replace("source", "source\\logo")))
+                        //    break;
                         List<String> TempFiles = new List<String>();
                         TempFiles.Add(_SourceFile);
 
@@ -130,13 +132,16 @@ namespace Feeder
                         File.WriteAllText(Path.GetDirectoryName(Application.ExecutablePath) + "\\LastJob.txt", item.ModifiedDate);
                         break;
                     }
+                    else
+                    {
+                        timer1.Enabled = true;
+                    }
                 }
             }
             catch
             {
                 timer1.Enabled = true;
-            }
-            timer1.Enabled = true;
+            }            
         }
     }
 }
