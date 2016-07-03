@@ -27,49 +27,7 @@ namespace Feeder
         {
 
         }
-        void Temp_EV_copyComplete()
-        {
-            try
-            {
-                this.Invoke(new MethodInvoker(delegate ()
-                    {
-                        if (File.Exists(_DestFile))
-                        {
-                            WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
 
-                            request.Method = "POST";
-
-                            string postData = "FileName=" + _DateDir + "\\" + _FileName.Replace(" ", "-") + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim()+ "&Origin="+_SourceFile;
-
-                            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
-
-                            request.ContentType = "application/x-www-form-urlencoded";
-
-                            request.ContentLength = byteArray.Length;
-
-                            Stream dataStream = request.GetRequestStream();
-
-                            dataStream.Write(byteArray, 0, byteArray.Length);
-
-                            dataStream.Close();
-
-                            WebResponse response = request.GetResponse();
-                            timer1.Enabled = true;
-                        }
-
-                    }));
-            }
-            catch
-            {
-                timer1.Enabled = true;
-            }
-
-        }
-        void Temp_EV_copyCanceled(List<CopyFiles.CopyFiles.ST_CopyFileDetails> filescopied)
-        {
-            MessageBox.Show("عملیات کپی متوقف شد");
-            timer1.Enabled = true;
-        }
         private void timer1_Tick(object sender, EventArgs e)
         {
             timer1.Enabled = false;
@@ -119,18 +77,40 @@ namespace Feeder
                         //Application.DoEvents();
                       //  if (File.Exists(_SourceFile.Replace("source", "source\\logo")))
                         //    break;
-                        List<String> TempFiles = new List<String>();
-                        TempFiles.Add(_SourceFile);
+                       
 
-                        CopyFiles.CopyFiles Temp = new CopyFiles.CopyFiles(TempFiles, _DestFile);
-                        Temp.EV_copyCanceled += Temp_EV_copyCanceled;
-                        Temp.EV_copyComplete += Temp_EV_copyComplete;
+                        //CopyFiles.CopyFiles Temp = new CopyFiles.CopyFiles(_SourceFile, _DestFile);
+                        //Temp.EV_copyCanceled += Temp_EV_copyCanceled;
+                        //Temp.EV_copyComplete += Temp_EV_copyComplete;
 
-                        CopyFiles.DIA_CopyFiles TempDiag = new CopyFiles.DIA_CopyFiles();
-                        TempDiag.SynchronizationObject = this;
-                        Temp.CopyAsync(TempDiag);
+                        //CopyFiles.DIA_CopyFiles TempDiag = new CopyFiles.DIA_CopyFiles();
+                        //TempDiag.SynchronizationObject = this;
+                        //Temp.Copy();
+                        File.Copy(_SourceFile, _DestFile,true);
                         File.WriteAllText(Path.GetDirectoryName(Application.ExecutablePath) + "\\LastJob.txt", item.ModifiedDate);
-                        break;
+                        if (File.Exists(_DestFile))
+                        {
+                            WebRequest request2 = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
+
+                            request2.Method = "POST";
+
+                            string postData = "FileName=" + _DateDir + "\\" + _FileName.Replace(" ", "-") + "&UserId=" + System.Configuration.ConfigurationSettings.AppSettings["UserId"].Trim() + "&Origin=" + _SourceFile;
+
+                            byte[] byteArray = Encoding.UTF8.GetBytes(postData);
+
+                            request2.ContentType = "application/x-www-form-urlencoded";
+
+                            request2.ContentLength = byteArray.Length;
+
+                            Stream dataStream = request2.GetRequestStream();
+
+                            dataStream.Write(byteArray, 0, byteArray.Length);
+
+                            dataStream.Close();
+
+                            WebResponse response3 = request2.GetResponse();
+                            timer1.Enabled = true;
+                        }
                     }
                     else
                     {
@@ -142,6 +122,11 @@ namespace Feeder
             {
                 timer1.Enabled = true;
             }            
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            timer1_Tick(null, null);
         }
     }
 }
