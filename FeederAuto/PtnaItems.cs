@@ -15,6 +15,6 @@ namespace Feeder
         public string FileName { get; set; }
         public string Duration { get; set; }
         public string Language { get; set; }
-        public string ModifiedDate { get; set; }
+        public DateTime ModifiedDate { get; set; }
     }
 }

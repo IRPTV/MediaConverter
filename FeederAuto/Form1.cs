@@ -44,9 +44,12 @@ namespace Feeder
                 List<PtnaItems> SortedList = RvLst.OrderBy(o => o.ModifiedDate).ToList();
                 foreach (var item in SortedList)
                 {
-                    if (DateTime.Parse(item.ModifiedDate) > DateTime.Parse(File.ReadAllLines(Path.GetDirectoryName(Application.ExecutablePath) + "\\LastJob.txt")[0]))
+               // MessageBox.Show(item.FileName);
+                if (item.ModifiedDate> DateTime.Parse(File.ReadAllLines(Path.GetDirectoryName(Application.ExecutablePath) + "\\LastJob.txt")[0]))
                     {
-                        richTextBox2.Text = "\n===================\n";
+                        File.WriteAllText(Path.GetDirectoryName(Application.ExecutablePath) + "\\LastJob.txt", item.ModifiedDate.ToString());
+                    //MessageBox.Show("MOD:"+item.ModifiedDate+"**"+item.FileName);
+                    richTextBox2.Text = "\n===================\n";
                         richTextBox2.SelectionStart = richTextBox2.Text.Length;
                         richTextBox2.ScrollToCaret();
                         Application.DoEvents();
@@ -87,10 +90,10 @@ namespace Feeder
                         //TempDiag.SynchronizationObject = this;
                         //Temp.Copy();
                         File.Copy(_SourceFile, _DestFile,true);
-                        File.WriteAllText(Path.GetDirectoryName(Application.ExecutablePath) + "\\LastJob.txt", item.ModifiedDate);
                         if (File.Exists(_DestFile))
                         {
-                            WebRequest request2 = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
+                        //MessageBox.Show("EXIST:"+_DestFile);
+                        WebRequest request2 = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
 
                             request2.Method = "POST";
 
@@ -121,7 +124,7 @@ namespace Feeder
             catch
             {
                 timer1.Enabled = true;
-            }            
+            }
         }
 
         private void Form1_Shown(object sender, EventArgs e)
