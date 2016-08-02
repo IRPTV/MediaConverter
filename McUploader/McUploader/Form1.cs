@@ -227,9 +227,13 @@ namespace McUploader
                                             var buffer = new byte[32 * 1024];
                                             int readBytesCount;
                                             long length = inputStream.Length;
+                                            long r = 0;
+                                            progressBar1.Maximum = (int)length;
                                             while ((readBytesCount = inputStream.Read(buffer, 0, buffer.Length)) > 0)
                                             {
                                                 outputStream.Write(buffer, 0, readBytesCount);
+                                                r += readBytesCount;
+                                                progressBar1.Value = (int)r;
                                                 Application.DoEvents();
                                             }
                                             outputStream.Close();

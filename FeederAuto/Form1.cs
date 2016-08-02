@@ -66,21 +66,21 @@ namespace Feeder
                         label1.Text = DateTime.Now.ToString();
 
                         DirectoryInfo Dir = new DirectoryInfo(_Path);
-                        //if (!Dir.Exists)
-                        //{
-                        //    Dir.Create();
-                        //    richTextBox2.Text += "Temp Directory Created: " + Dir.ToString() + "\n";
-                        //    richTextBox2.SelectionStart = richTextBox2.Text.Length;
-                        //    richTextBox2.ScrollToCaret();
-                        //    Application.DoEvents();
-                        //}
+                        if (!Dir.Exists)
+                        {
+                            Dir.Create();
+                            richTextBox2.Text += "Temp Directory Created: " + Dir.ToString() + "\n";
+                            richTextBox2.SelectionStart = richTextBox2.Text.Length;
+                            richTextBox2.ScrollToCaret();
+                            Application.DoEvents();
+                        }
                         //richTextBox2.Text += "Start Copy To Local: " + _SourceFile.ToString() + "\n";
                         //richTextBox2.SelectionStart = richTextBox2.Text.Length;
                         //richTextBox2.ScrollToCaret();
                         //Application.DoEvents();
-                      //  if (File.Exists(_SourceFile.Replace("source", "source\\logo")))
+                        //  if (File.Exists(_SourceFile.Replace("source", "source\\logo")))
                         //    break;
-                       
+
 
                         //CopyFiles.CopyFiles Temp = new CopyFiles.CopyFiles(_SourceFile, _DestFile);
                         //Temp.EV_copyCanceled += Temp_EV_copyCanceled;
