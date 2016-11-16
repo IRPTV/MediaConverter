@@ -36,7 +36,7 @@ namespace Feeder
                 if (File.Exists(_DestFile))
                 {
                     //Call Service:
-                    WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim());
+                    WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim()+ "/files/insert");
 
                     request.Method = "POST";
 
@@ -79,7 +79,20 @@ namespace Feeder
         }
         private void button2_Click(object sender, EventArgs e)
         {
-            if(openFileDialog1.FileName.Length>0)
+            WebRequest request = WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/GetDate");
+            request.Credentials = CredentialCache.DefaultCredentials;
+            WebResponse response = request.GetResponse();
+            Console.WriteLine(((HttpWebResponse)response).StatusDescription);
+            Stream dataStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(dataStream);
+            string responseFromServer = reader.ReadToEnd();
+            Console.WriteLine(responseFromServer);
+            reader.Close();
+            response.Close();
+            responseFromServer = responseFromServer.Replace("\"", "").Replace("\\","");
+            DateTime t = DateTime.Parse(responseFromServer);
+
+            if (openFileDialog1.FileName.Length>0)
             {
                 richTextBox2.Text += "\n===================\n";
                 richTextBox2.SelectionStart = richTextBox2.Text.Length;
@@ -88,9 +101,9 @@ namespace Feeder
 
                 _SourceFile = openFileDialog1.FileName;
                 _FileName = Path.GetFileName(openFileDialog1.FileName).Replace(" ","-");
-                _Path = System.Configuration.ConfigurationSettings.AppSettings["DestPath"].Trim() + "\\" + DateTime.Now.ToString("yyyyMMdd");
+                _Path = System.Configuration.ConfigurationSettings.AppSettings["DestPath"].Trim() + "\\" + t.ToString("yyyyMMdd");
                 _DestFile = _Path + "\\" + Path.GetFileName(openFileDialog1.FileName).Replace(" ", "-");
-                _DateDir = DateTime.Now.ToString("yyyyMMdd");
+                _DateDir = t.ToString("yyyyMMdd");
                 
                 
                 DirectoryInfo Dir = new DirectoryInfo(_Path);

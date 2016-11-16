@@ -37,6 +37,10 @@ namespace McService
             }
             return Lst;
         }
+        public string GetDate()
+        {
+            return DateTime.Now.ToString();
+        }
 
         public string UserDetail(string Username)
         {
