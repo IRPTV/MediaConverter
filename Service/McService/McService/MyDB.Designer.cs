@@ -3616,12 +3616,12 @@ WHERE        (Files.FId = @FileID) and Categories_Path.ServerIp like '\\192.168%
             this._commandCollection[28].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@QUID", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "QuId", global::System.Data.DataRowVersion.Original, false, null, "", "", ""));
             this._commandCollection[29] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[29].Connection = this.Connection;
-            this._commandCollection[29].CommandText = @"SELECT        Queue_Convert.DateTime_Insert, Queue_Convert.DateTime_Start, Queue_Convert.DateTime_Done, Queue_Convert.Converted, Profiles.Title
-FROM            Queue_Convert INNER JOIN
-                         Files ON Queue_Convert.FileId = Files.FId INNER JOIN
-                         Categories_Profiles ON Queue_Convert.CpId = Categories_Profiles.CtPtblId INNER JOIN
-                         Profiles ON Categories_Profiles.ProfId = Profiles.Id
-WHERE        (Files.FId = @fid)
+            this._commandCollection[29].CommandText = @"SELECT Queue_Convert.DateTime_Insert, Queue_Convert.DateTime_Start, Queue_Convert.DateTime_Done, Queue_Convert.Converted, Profiles.Title, Queue_Convert.QtblId
+FROM   Queue_Convert INNER JOIN
+             Files ON Queue_Convert.FileId = Files.FId INNER JOIN
+             Categories_Profiles ON Queue_Convert.CpId = Categories_Profiles.CtPtblId INNER JOIN
+             Profiles ON Categories_Profiles.ProfId = Profiles.Id
+WHERE (Files.FId = @fid)
 ORDER BY Categories_Profiles.Priority";
             this._commandCollection[29].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[29].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
@@ -3644,15 +3644,14 @@ WHERE        (Files.FId = @fid)";
             this._commandCollection[31].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@UserId", global::System.Data.SqlDbType.Int, 4, global::System.Data.ParameterDirection.Input, 0, 0, "UserID", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
             this._commandCollection[32] = new global::System.Data.SqlClient.SqlCommand();
             this._commandCollection[32].Connection = this.Connection;
-            this._commandCollection[32].CommandText = @"SELECT        Queue_Upload.DateTime_Insert, Queue_Upload.DateTime_Start, Queue_Upload.DateTime_Done, Queue_Upload.Uploaded, Categories_Path.ServerIp, 
-                         Profiles.Title
-FROM            Queue_Convert INNER JOIN
-                         Files ON Queue_Convert.FileId = Files.FId INNER JOIN
-                         Queue_Upload ON Queue_Convert.QtblId = Queue_Upload.QcId INNER JOIN
-                         Categories_Path ON Queue_Upload.CatPathId = Categories_Path.PathId INNER JOIN
-                         Categories_Profiles ON Queue_Convert.CpId = Categories_Profiles.CtPtblId INNER JOIN
-                         Profiles ON Categories_Profiles.ProfId = Profiles.Id
-WHERE        (Files.FId = @fid)";
+            this._commandCollection[32].CommandText = @"SELECT Queue_Upload.DateTime_Insert, Queue_Upload.DateTime_Start, Queue_Upload.DateTime_Done, Queue_Upload.Uploaded, Categories_Path.ServerIp, Profiles.Title, Queue_Upload.QcId
+FROM   Queue_Convert INNER JOIN
+             Files ON Queue_Convert.FileId = Files.FId INNER JOIN
+             Queue_Upload ON Queue_Convert.QtblId = Queue_Upload.QcId INNER JOIN
+             Categories_Path ON Queue_Upload.CatPathId = Categories_Path.PathId INNER JOIN
+             Categories_Profiles ON Queue_Convert.CpId = Categories_Profiles.CtPtblId INNER JOIN
+             Profiles ON Categories_Profiles.ProfId = Profiles.Id
+WHERE (Files.FId = @fid)";
             this._commandCollection[32].CommandType = global::System.Data.CommandType.Text;
             this._commandCollection[32].Parameters.Add(new global::System.Data.SqlClient.SqlParameter("@fid", global::System.Data.SqlDbType.BigInt, 8, global::System.Data.ParameterDirection.Input, 0, 0, "FId", global::System.Data.DataRowVersion.Current, false, null, "", "", ""));
         }

@@ -187,6 +187,7 @@ namespace McService
                     cnv.Convert_Datetime_Start = Dt_Convert[j]["Datetime_Start"].ToString();
                     cnv.Converted = Dt_Convert[j]["Converted"].ToString();
                     cnv.ProfileTitle = Dt_Convert[j]["Title"].ToString();
+                    cnv.QcId = Dt_Convert[j]["qtblid"].ToString();
                     cnvlist.Add(cnv);
                 }
                 ff.FilesCnvrt = cnvlist;
@@ -219,6 +220,7 @@ namespace McService
                     upl.Uploaded = Dt_Upload[m]["Uploaded"].ToString();
                     upl.ServerIp = Dt_Upload[m]["ServerIp"].ToString();
                     upl.ProfileTitle = Dt_Upload[m]["Title"].ToString();
+                    upl.QcId = Dt_Upload[m]["qcid"].ToString();
                     upllist.Add(upl);
                 }
                 ff.FilesUpld = upllist;
@@ -786,6 +788,7 @@ namespace McService
         public string Convert_Datetime_Done { get; set; }
         public string ProfileTitle { get; set; }
         public string Converted { get; set; }
+        public string QcId { get; set; }
 
     }
     public class UserFilesFlag
@@ -805,6 +808,7 @@ namespace McService
         public string ServerIp { get; set; }
 
         public string ProfileTitle { get; set; }
+        public string QcId { get; set; }
     }
     public class LogoQueue
     {
