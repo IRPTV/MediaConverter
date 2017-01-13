@@ -45,10 +45,10 @@ namespace VideoFlagger
             vttReplace = (string)new AppSettingsReader().GetValue("vttReplace", typeof(String));
             serverCode = (string)new AppSettingsReader().GetValue("serverCode", typeof(String));
 
-            var t = new Timer(12 * 1000);
+            var t = new Timer(60 * 1000);
             t.Elapsed += Elapsed;
             t.Enabled = true;
-
+            Console.WriteLine("");
             go();
 
             while (Console.ReadLine() != "q") { }
