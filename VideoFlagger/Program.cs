@@ -136,6 +136,7 @@ namespace VideoFlagger
                 aa += fileAddr + "_sprite.jpg#xywh=" + ((i % 4) * 100) + "," + ((i / 4) * 80) + ",100,80\n\n";
                 dt = dt.AddSeconds(45);
             }
+            //System.IO.File.WriteAllText(dest + add, aa);
         }
 
         static void runM4Box(string fileAddr, string QfId)

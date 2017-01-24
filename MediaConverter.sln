@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FeederAuto", "FeederAuto\Fe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoFlagger", "VideoFlagger\VideoFlagger.csproj", "{0B6695DE-5CC0-4F1D-88DD-44F8C144BD7D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCVTTGEN", "MCVTTGEN\MCVTTGEN\MCVTTGEN.csproj", "{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,14 @@ Global
 		{0B6695DE-5CC0-4F1D-88DD-44F8C144BD7D}.Release|Any CPU.ActiveCfg = Release|x86
 		{0B6695DE-5CC0-4F1D-88DD-44F8C144BD7D}.Release|x86.ActiveCfg = Release|x86
 		{0B6695DE-5CC0-4F1D-88DD-44F8C144BD7D}.Release|x86.Build.0 = Release|x86
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Debug|x86.Build.0 = Debug|Any CPU
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Release|x86.ActiveCfg = Release|Any CPU
+		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
