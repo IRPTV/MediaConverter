@@ -91,20 +91,24 @@ namespace Feeder
                         //Temp.Copy();
 
                         ////Copy File to Duplicate Dest Path:
-                        var DuplicateDestPath = System.Configuration.ConfigurationSettings.AppSettings["DuplicateDestPath"].Trim();
-                        if (DuplicateDestPath.Length>0)
+                        try
                         {
-                            string DupDestDir = "";
-                            string[] tmpOrg = _SourceFile.Split(new string[] { "\\" }, 100, StringSplitOptions.RemoveEmptyEntries);
-                            for (int i = 1; i < tmpOrg.Length - 1; i++)
+                            var DuplicateDestPath = System.Configuration.ConfigurationSettings.AppSettings["DuplicateDestPath"].Trim();
+                            if (DuplicateDestPath.Length > 0)
                             {
-                                DupDestDir += tmpOrg[i] + "\\";
-                            }
-                            DupDestDir = DupDestDir.Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
-                            Directory.CreateDirectory(DuplicateDestPath + "\\" + DupDestDir);
-                            File.Copy(_SourceFile, DuplicateDestPath + "\\" + DupDestDir+"\\"+_FileName, true);
+                                string DupDestDir = "";
+                                string[] tmpOrg = _SourceFile.Split(new string[] { "\\" }, 100, StringSplitOptions.RemoveEmptyEntries);
+                                for (int i = 1; i < tmpOrg.Length - 1; i++)
+                                {
+                                    DupDestDir += tmpOrg[i] + "\\";
+                                }
+                                DupDestDir = DupDestDir.Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
+                                Directory.CreateDirectory(DuplicateDestPath + "\\" + DupDestDir);
+                                File.Copy(_SourceFile, DuplicateDestPath + "\\" + DupDestDir + "\\" + _FileName, true);
 
+                            }
                         }
+                        catch { }
 
 
 
