@@ -34,6 +34,17 @@ namespace MCConverter
             timer1.Enabled = true;
 
         }
+        protected void Logger(string txt)
+        {
+            if (richTextBox1.Lines.Length > 500)
+            {
+                richTextBox1.Text = "";
+            }                      
+            richTextBox1.Text += "["+DateTime.Now.ToString()+"] "+(txt) + " \n";
+            richTextBox1.SelectionStart = richTextBox1.Text.Length;
+            richTextBox1.ScrollToCaret();
+            Application.DoEvents();
+        }
         protected void QueueCount()
         {
             try
@@ -42,6 +53,7 @@ namespace MCConverter
                 string Json = "";
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/1000/false/" + ProfId +
                     "/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
+                Logger("Q count:"+ request.RequestUri.ToString());
                 try
                 {
                     WebResponse response = request.GetResponse();
@@ -63,6 +75,7 @@ namespace MCConverter
 
 
                 List<ConvertQueue> ConvertList = JsonConvert.DeserializeObject<List<ConvertQueue>>(Json);
+                Logger("Q count:"+ ConvertList.Count);
                 label2.Text = "Q:[" + ConvertList.Count + "]";
             }
             catch (Exception EXp)
@@ -109,71 +122,37 @@ namespace MCConverter
                     label5.Text = item.Filename;
 
                     string SourceFile = item.SrcDirectory + "logo\\" + item.Filename;
+                    Logger("Source:"+ SourceFile);
                     string[] SrcDir = SourceFile.Split('\\');
 
                     if (File.Exists(SourceFile))
                     {
+                        try
+                        {
+                            HttpWebRequest ReqStart = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/start");
+                            ReqStart.GetResponse();
+                        }
+                        catch { }
+                                     
                         string DestFile = item.ConvertDirectory + SrcDir[SrcDir.Length - 2] + "\\" + Path.GetFileNameWithoutExtension(SourceFile) + item.FilenameSuffix;
-                       // string Command = item.Command.Replace("{in}", SourceFile).Replace("{out}", DestFile);
-
+                        Logger("Dest:" + DestFile);
                         if (!Directory.Exists(Path.GetDirectoryName(DestFile)))
                         {
                             Directory.CreateDirectory(Path.GetDirectoryName(DestFile));
                         }
-
-
-                     
-
                         string aa = "WEBVTT\n\n";
                         DateTime dt = DateTime.Parse("1/1/1");
-
-                        //string add = args[0];
-                        //add = add.ToLower().Replace(".mp4", ".vtt");
-                        //add = add.Remove(0, add.LastIndexOf("\\"));
-
+                        Logger("START VTT:");
                         for (int i = 0; i < 160; i++)
                         {
                             aa += dt.ToString("HH:mm:ss.000") + " --> " + dt.AddSeconds(45).ToString("HH:mm:ss.000") + "\n";
                             aa += Path.GetFileNameWithoutExtension(SourceFile).Replace(".vtt","") + "_sprite.png#xywh=" + ((i % 4) * 100) + "," + ((i / 4) * 80) + ",100,80\n\n";
-                            dt = dt.AddSeconds(45);
+                            dt = dt.AddSeconds(45);                            
                         }
+                        Logger(aa);
                         System.IO.File.WriteAllText(DestFile, aa);
-                        //Process proc = new Process(); if (Environment.Is64BitOperatingSystem)
-                        //{
-                        //    proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg64";
-                        //}
-                        //else
-                        //{
-                        //    proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffmpeg32";
-                        //}
-                        //proc.StartInfo.Arguments = Command;
-                        //proc.StartInfo.RedirectStandardError = true;
-                        //proc.StartInfo.UseShellExecute = false;
-                        //proc.StartInfo.CreateNoWindow = true;
-                        //proc.EnableRaisingEvents = true;
-
-                        //proc.Start();
-
-                        HttpWebRequest ReqStart = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/start");
-                        ReqStart.GetResponse();
-
-                       // StreamReader reader = proc.StandardError;
-                        //string line;
-                        //while ((line = reader.ReadLine()) != null)
-                        //{
-                        //    if (richTextBox1.Lines.Length > 5)
-                        //    {
-                        //        richTextBox1.Text = "";
-                        //    }
-
-                        //    FindDuration(line);
-                        //    richTextBox1.Text += (line) + " \n";
-                        //    richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                        //    richTextBox1.ScrollToCaret();
-                        //    Application.DoEvents();
-                        //}
+                        Logger("File Saved");
                         HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/done");
-
                         if (File.Exists(DestFile))
                         {
                             ReqDone.GetResponse();
@@ -183,12 +162,13 @@ namespace MCConverter
                         {
                             ReqDone.GetResponse();
                         }
-
                         progressBar1.Value = progressBar1.Maximum;
                         label1.Text = "100%";
+                        
                     }
                     else
                     {
+                        Logger("FILE NOT EXIST");
                         HttpWebRequest ReqDelete = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/delete");
                         ReqDelete.GetResponse();
                         
@@ -209,48 +189,7 @@ namespace MCConverter
                 richTextBox1.ScrollToCaret();
             }
         }
-        protected void FindDuration(string Str)
-        {
-            string TimeCode = "";
-            if (Str.Contains("Duration:"))
-            {
-                TimeCode = Str.Substring(Str.IndexOf("Duration: "), 21).Replace("Duration: ", "").Trim();
-                string[] Times = TimeCode.Split('.')[0].Split(':');
-                double Frames = double.Parse(Times[0].ToString()) * (3600) * (25) +
-                    double.Parse(Times[1].ToString()) * (60) * (25) +
-                    double.Parse(Times[2].ToString()) * (25);
-                progressBar1.Maximum = int.Parse(Frames.ToString());
-            }
-            if (Str.Contains("time="))
-            {
-                try
-                {
-                    string CurTime = "";
-                    CurTime = Str.Substring(Str.IndexOf("time="), 16).Replace("time=", "").Trim();
-                    string[] CTimes = CurTime.Split('.')[0].Split(':');
-                    double CurFrame = double.Parse(CTimes[0].ToString()) * (3600) * (25) +
-                        double.Parse(CTimes[1].ToString()) * (60) * (25) +
-                        double.Parse(CTimes[2].ToString()) * (25);
-
-
-                    progressBar1.Value = int.Parse(CurFrame.ToString());
-
-                    label1.Text = ((progressBar1.Value * 100) / progressBar1.Maximum).ToString() + "%";
-
-                    Application.DoEvents();
-                }
-                catch
-                { }
-
-            }
-            if (Str.Contains("fps="))
-            {
-                string Speed = "";
-                Speed = Str.Substring(Str.IndexOf("fps="), 8).Replace("fps=", "").Trim();
-                label4.Text = "Speed: " + (float.Parse(Speed) / 25).ToString() + " X ";
-                Application.DoEvents();
-            }
-        }
+       
         private void Form1_Load(object sender, EventArgs e)
         {
             label3.Text = System.Configuration.ConfigurationSettings.AppSettings["ProfileTitle"].Trim();
