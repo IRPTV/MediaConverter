@@ -158,7 +158,8 @@ namespace McUploader
                             //Added to replace % from  sprit filename:
                             Source = Source.Replace("%03d", "").Replace("\\_", "_");
 
-                            Dest = Dest.Replace("%03d", "").Replace("\\", "");
+
+                            Dest = Dest.Replace("%03d", "");//.Replace("\\", "");
 
                             LogWriter("S:" + Source);
                             LogWriter("D:" + Dest);
