@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using MediaInfoNET;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -111,8 +112,25 @@ namespace MCConverter
                     string SourceFile = item.SrcDirectory + "logo\\" + item.Filename;
                     string[] SrcDir = SourceFile.Split('\\');
 
-                    if (File.Exists(SourceFile))
+                    if (System.IO.File.Exists(SourceFile))
                     {
+
+                        MediaFile videof = new MediaFile(SourceFile);
+                        int Bitrate = 99999999;
+                        try
+                        {
+                           // System.IO.File.WriteAllText(Path.GetDirectoryName(Application.ExecutablePath) + "\\Log.txt", GetBitrate(SourceFile));
+                            Bitrate = int.Parse(GetBitrate(SourceFile));
+                            label6.Text = "SourceBitrate:" + Bitrate.ToString();
+                        }
+                        catch
+                        {
+                            label6.Text = "SourceBitrate:???";
+                        }
+
+
+
+
                         string DestFile = item.ConvertDirectory + SrcDir[SrcDir.Length - 2] + "\\" + Path.GetFileNameWithoutExtension(SourceFile) + item.FilenameSuffix;
                         string Command = item.Command.Replace("{in}", SourceFile).Replace("{out}", DestFile);
 
@@ -134,30 +152,59 @@ namespace MCConverter
                         proc.StartInfo.UseShellExecute = false;
                         proc.StartInfo.CreateNoWindow = true;
                         proc.EnableRaisingEvents = true;
+                        if (!SourceFile.ToLower().Contains(".mp4"))
+                        {
+                            proc.Start();
+                            StreamReader reader = proc.StandardError;
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                if (richTextBox1.Lines.Length > 5)
+                                {
+                                    richTextBox1.Text = "";
+                                }
 
-                        proc.Start();
+                                FindDuration(line);
+                                richTextBox1.Text += (line) + " \n";
+                                richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                                richTextBox1.ScrollToCaret();
+                                Application.DoEvents();
+                            }
+                        }
+                        else
+                        {
+                            if (Bitrate > int.Parse(System.Configuration.ConfigurationSettings.AppSettings["MaxBitrate"].Trim()))
+                            {
+                                proc.Start();
+                                StreamReader reader = proc.StandardError;
+                                string line;
+                                while ((line = reader.ReadLine()) != null)
+                                {
+                                    if (richTextBox1.Lines.Length > 5)
+                                    {
+                                        richTextBox1.Text = "";
+                                    }
+
+                                    FindDuration(line);
+                                    richTextBox1.Text += (line) + " \n";
+                                    richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                                    richTextBox1.ScrollToCaret();
+                                    Application.DoEvents();
+                                }
+                            }
+                            else
+                            {
+                                System.IO.File.Copy(SourceFile, DestFile,true);
+                            }
+                        }
 
                         HttpWebRequest ReqStart = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/start");
                         ReqStart.GetResponse();
 
-                        StreamReader reader = proc.StandardError;
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            if (richTextBox1.Lines.Length > 5)
-                            {
-                                richTextBox1.Text = "";
-                            }
-
-                            FindDuration(line);
-                            richTextBox1.Text += (line) + " \n";
-                            richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                            richTextBox1.ScrollToCaret();
-                            Application.DoEvents();
-                        }
+                        
                         HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/convert/" + item.ConvertId + "/done");
 
-                        if (File.Exists(DestFile))
+                        if (System.IO.File.Exists(DestFile))
                         {
                             ReqDone.GetResponse();
                         }
@@ -191,6 +238,35 @@ namespace MCConverter
                 richTextBox1.SelectionStart = richTextBox1.Text.Length;
                 richTextBox1.ScrollToCaret();
             }
+        }
+        protected string GetBitrate(string filePath)
+        {
+            try
+            {
+                Process proc = new Process();
+                proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffprobe";
+                proc.StartInfo.Arguments = " -v error -select_streams v:0 -show_entries stream=bit_rate -of default=noprint_wrappers=1:nokey=1 \"" + filePath + "\"";
+                proc.StartInfo.CreateNoWindow = true;
+                proc.StartInfo.RedirectStandardOutput = true;
+                proc.StartInfo.RedirectStandardError = true;
+                proc.StartInfo.UseShellExecute = false;
+                proc.Start();
+                StreamReader reader = proc.StandardOutput;
+                return reader.ReadToEnd();
+            }
+            catch {
+
+                return "99999999";
+            }
+            //string line;
+            //while ((line = reader.ReadLine()) != null)
+            //{
+            //    richTextBox1.Text += (line) + " \n";
+            //    richTextBox1.SelectionStart = richTextBox1.Text.Length;
+            //    richTextBox1.ScrollToCaret();
+            //    Application.DoEvents();
+            //}
+            //return line;
         }
         protected void FindDuration(string Str)
         {
