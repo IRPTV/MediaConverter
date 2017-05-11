@@ -131,31 +131,37 @@ namespace LogoOverlay
                         proc.StartInfo.CreateNoWindow = true;
                         proc.EnableRaisingEvents = true;
 
-                        proc.Start();
 
 
                         bool Error = false;
-
-                        StreamReader reader = proc.StandardError;
-                        string line;
-
-                        while ((line = reader.ReadLine()) != null)
+                        if (item.LogoFile.Length > 0)
                         {
-                            if (richTextBox1.Lines.Length > 5)
-                            {
-                                richTextBox1.Text = "";
-                            }
-                            if (line.ToLower().Contains("not found") || line.ToLower().Contains("invalid"))
-                            {
-                                Error = true;
-                            }
+                            proc.Start();
+                            StreamReader reader = proc.StandardError;
+                            string line;
 
-                            ErrorLog += line;
-                            FindDuration(line);
-                            richTextBox1.Text += (line) + " \n";
-                            richTextBox1.SelectionStart = richTextBox1.Text.Length;
-                            richTextBox1.ScrollToCaret();
-                            Application.DoEvents();
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                if (richTextBox1.Lines.Length > 5)
+                                {
+                                    richTextBox1.Text = "";
+                                }
+                                if (line.ToLower().Contains("not found") || line.ToLower().Contains("invalid"))
+                                {
+                                    Error = true;
+                                }
+
+                                ErrorLog += line;
+                                FindDuration(line);
+                                richTextBox1.Text += (line) + " \n";
+                                richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                                richTextBox1.ScrollToCaret();
+                                Application.DoEvents();
+                            }
+                        }
+                        else
+                        {
+                            System.IO.File.Copy(SourceFile, DestFile,true);
                         }
 
                         if (Error)
