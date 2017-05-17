@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Timers;
 using System.IO;
 using System.Configuration;
+using System.Collections;
 
 namespace VideoFlagger
 {
@@ -30,7 +31,7 @@ namespace VideoFlagger
         public string ServerIp { get; set; }
     }
 
-    class Program
+    static class Program
     {
         static bool _isFree;
         static string backServer;
@@ -44,13 +45,11 @@ namespace VideoFlagger
             vttServer = (string)new AppSettingsReader().GetValue("vttServer", typeof(String));
             vttReplace = (string)new AppSettingsReader().GetValue("vttReplace", typeof(String));
             serverCode = (string)new AppSettingsReader().GetValue("serverCode", typeof(String));
-
-            var t = new Timer(60 * 1000);
+            Timer t = new Timer(5 * 1000);
             t.Elapsed += Elapsed;
             t.Enabled = true;
             Console.WriteLine("");
             go();
-
             while (Console.ReadLine() != "q") { }
         }
 
@@ -61,7 +60,35 @@ namespace VideoFlagger
                 go();
             }
         }
+        public static int Count(this IEnumerable source)
+        {
+            var col = source as ICollection;
+            if (col != null)
+                return col.Count;
 
+            int c = 0;
+            var e = source.GetEnumerator();
+            DynamicUsing(e, () =>
+            {
+                while (e.MoveNext())
+                    c++;
+            });
+
+            return c;
+        }
+        public static void DynamicUsing(object resource, Action action)
+        {
+            try
+            {
+                action();
+            }
+            finally
+            {
+                IDisposable d = resource as IDisposable;
+                if (d != null)
+                    d.Dispose();
+            }
+        }
         static void go()
         {
             _isFree = false;
@@ -71,53 +98,63 @@ namespace VideoFlagger
                 {
                     var innerData = Encoding.UTF8.GetString(wc.DownloadData(backServer + "1/false/" + serverCode));
                     var ff = JsonConvert.DeserializeObject<IEnumerable<FlagQueue>>(innerData);
-
-                    foreach (FlagQueue f in ff)
+                    Console.WriteLine(DateTime.Now + "\tItems Count: " + Count(ff).ToString());
+                    if (Count(ff) > 0)
                     {
-                        string file = f.ConvertDirectory + f.Filename.Remove(f.Filename.LastIndexOf(".")) + f.FilenameSuffix;
-                        Console.WriteLine(DateTime.Now + "\tRunning Flagger...");
-                        if (f.Kind == "0")
+                        foreach (FlagQueue f in ff)
                         {
-                            if (file.Contains("\\_sprite%03d.png"))
+                            string file = f.ConvertDirectory + f.Filename.Remove(f.Filename.LastIndexOf(".")) + f.FilenameSuffix;
+                            Console.WriteLine(DateTime.Now + "\t"+file);
+                            Console.WriteLine(DateTime.Now + "\tRunning Flagger...");
+                            if (f.Kind == "0")
                             {
-                                try
+                                if (file.Contains("\\_sprite%03d.png"))
                                 {
-                                    File.Delete(file);
-                                }
-                                catch { }
-                                file = file.Replace("\\_sprite%03d.png", string.Empty);
-                                montage(file);
-                            }
-                            runM4Box(file, f.QfId);
-                            foreach (UploadQueue uq in f.UploadQueue)
-                            {
-                                if (uq.ServerIp.StartsWith("\\"))
-                                {
-                                    var hh = vttServer + uq.ServerIp.Replace(vttReplace, string.Empty) + f.Filename;
                                     try
                                     {
-                                        wc.DownloadData(hh);
+                                        File.Delete(file);
                                     }
                                     catch { }
+                                    file = file.Replace("\\_sprite%03d.png", string.Empty);
+                                    montage(file);
+                                }
+                                runM4Box(file, f.QfId);
+                                foreach (UploadQueue uq in f.UploadQueue)
+                                {
+                                    if (uq.ServerIp.StartsWith("\\"))
+                                    {
+                                        var hh = vttServer + uq.ServerIp.Replace(vttReplace, string.Empty) + f.Filename;
+                                        try
+                                        {
+                                            wc.DownloadData(hh);
+                                        }
+                                        catch { }
+                                    }
                                 }
                             }
-                        }
-                        else
-                        {
-                            var innerData2 = Encoding.UTF8.GetString(wc.DownloadData(backServer + f.QfId + "/start"));
-                            var innerData3 = Encoding.UTF8.GetString(wc.DownloadData(backServer + f.QfId + "/done"));
+                            else
+                            {
+                                var innerData2 = Encoding.UTF8.GetString(wc.DownloadData(backServer + f.QfId + "/start"));
+                                var innerData3 = Encoding.UTF8.GetString(wc.DownloadData(backServer + f.QfId + "/done"));
+                                _isFree = true;
+                            }
                         }
                     }
+                    else
+                    {
+                        _isFree = true;
+                    }
+
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine(DateTime.Now + "\t------ERROR-------" + ex.Message);
+                    _isFree = true;
                 }
             }
             Console.WriteLine(DateTime.Now + "\t--------------------Pass--------------");
-            _isFree = true;
-        }
 
+        }
         static void montage(string fileAddr)
         {
             var command = "\"" + fileAddr + "/*.png\" -tile 4x40 -geometry 100x80+0+0 \"" + fileAddr + "_sprite.png\"";
@@ -126,7 +163,7 @@ namespace VideoFlagger
             p.StartInfo = info;
             p.EnableRaisingEvents = true;
             p.Start();
-
+            p.Exited += montage_Exited;
             string aa = "WEBVTT\n\n";
             DateTime dt = DateTime.Parse("1/1/1");
 
@@ -136,29 +173,34 @@ namespace VideoFlagger
                 aa += fileAddr + "_sprite.jpg#xywh=" + ((i % 4) * 100) + "," + ((i / 4) * 80) + ",100,80\n\n";
                 dt = dt.AddSeconds(45);
             }
-            //System.IO.File.WriteAllText(dest + add, aa);
         }
+        private static void montage_Exited(object sender, EventArgs e)
+        {
 
+        }
+        static string _QfId = "";
         static void runM4Box(string fileAddr, string QfId)
         {
+            _QfId = QfId;
             var command = "-inter 0.5 \"" + fileAddr + "\"";
-            //File.AppendAllText("e:\\og.txt", command + "\r\n");
             ProcessStartInfo info = new ProcessStartInfo("C:\\Program Files\\GPAC\\mp4box.exe", command);
             Process p = new Process();
             p.StartInfo = info;
             p.EnableRaisingEvents = true;
-            p.Exited += (sender, e) =>
-            {
-                using (var wc = new WebClient())
-                {
-                    var innerData = Encoding.UTF8.GetString(wc.DownloadData(backServer + QfId + "/done"));
-                }
-            };
+            p.Exited += runM4Box_Exited;
             using (var wc = new WebClient())
             {
                 var innerData = Encoding.UTF8.GetString(wc.DownloadData(backServer + QfId + "/start"));
             }
             p.Start();
+        }
+        private static void runM4Box_Exited(object sender, EventArgs e)
+        {
+            using (var wc = new WebClient())
+            {
+                var innerData = Encoding.UTF8.GetString(wc.DownloadData(backServer + _QfId + "/done"));
+            }
+            _isFree = true;
         }
     }
 }
