@@ -63,17 +63,17 @@ namespace LogoOverlay
             }
 
 
-           
+
         }
         protected void Convert()
         {
-                        string ErrorLog = "";
-           try
+            string ErrorLog = "";
+            try
             {
                 QueueCount();
                 string Json = "";
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/logo/1/" + System.Configuration.ConfigurationSettings.AppSettings["ServerCode"].Trim());
-           
+
                 WebResponse response = request.GetResponse();
                 using (Stream responseStream = response.GetResponseStream())
                 {
@@ -108,9 +108,13 @@ namespace LogoOverlay
                         {
                             label5.Text = "Duration Error";
                         }
-                      
+
                         string DestFile = item.SrcDirectory + "logo\\" + item.Filename;
                         string Command = "-i " + "\"" + SourceFile + "\"" + " -vf \"movie=" + item.LogoFile + " [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
+                        //if(item.Filename.ToLower().Contains(".mp3")|| item.Filename.ToLower().Contains(".wav"))
+                        //{
+                        //    Command = "-i " + "\"" + SourceFile + "\"" + " -vf \"movie=" + item.LogoFile + " [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
+                        //}
 
                         if (!Directory.Exists(Path.GetDirectoryName(DestFile)))
                         {
@@ -161,7 +165,7 @@ namespace LogoOverlay
                         }
                         else
                         {
-                            System.IO.File.Copy(SourceFile, DestFile,true);
+                            System.IO.File.Copy(SourceFile, DestFile, true);
                         }
 
                         if (Error)
@@ -175,7 +179,7 @@ namespace LogoOverlay
                         }
                         else
                         {
-                            HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/" + item.FileId + "/Done/"+Duration.ToString());
+                            HttpWebRequest ReqDone = (HttpWebRequest)WebRequest.Create(System.Configuration.ConfigurationSettings.AppSettings["Service"].Trim() + "/files/Logo/" + item.FileId + "/Done/" + Duration.ToString());
                             ReqDone.GetResponse();
                         }
 
@@ -212,7 +216,7 @@ namespace LogoOverlay
             }
 
 
-           
+
 
         }
         protected void FindDuration(string Str)
