@@ -587,12 +587,92 @@ namespace McService
 
             //   endDt = DateTime.Now.AddYears(+10);
             //}
+            
 
 
 
             if (query.Trim().Length > 0)
             {
-                Cnvrt_Dt = Flag_Ta.Select_Files_Like(int.Parse(Count), "%" + query + "%",startDt,endDt);
+                if (query.ToLower() == ".mp3" || query.ToLower() == ".wav")
+                    Cnvrt_Dt = Flag_Ta.Select_Files_Like_Audio(int.Parse(Count), startDt, endDt);
+                else
+                Cnvrt_Dt = Flag_Ta.Select_Files_Like(int.Parse(Count), query ,startDt,endDt);
+
+            }
+            else
+            {
+                Cnvrt_Dt = Flag_Ta.Select_Files_Top(int.Parse(Count), startDt, endDt);
+
+            }
+
+            for (int i = 0; i < Cnvrt_Dt.Rows.Count; i++)
+            {
+                RepositoryFiles itm = new RepositoryFiles();
+                if (Cnvrt_Dt[i]["ServerCode"].ToString().ToLower() == "1")
+                {
+                    itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mpg", ".mp4").Replace(".wav", ".mp3");
+                    itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
+
+                }
+                if (Cnvrt_Dt[i]["ServerCode"].ToString().ToLower() == "2")
+                {
+                    itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress2"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mpg", ".mp4").Replace(".wav", ".mp3");
+                    itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress2"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
+
+                }
+                itm.Id = Cnvrt_Dt[i]["FId"].ToString();
+                itm.relativePath = Cnvrt_Dt[i]["Filename"].ToString();
+                itm.duration = Cnvrt_Dt[i]["duration"].ToString();
+
+                //Get Upload Q:
+                MyDB.DataTable1DataTable FlagUpload_Dt = Ta.SelectUploadQbyFileID(long.Parse(itm.Id));
+                if(FlagUpload_Dt.Rows.Count>0)
+                {
+                    itm.serverPath = FlagUpload_Dt[0]["ServerIp"].ToString();
+                    itm.serverCode = FlagUpload_Dt[0]["ServerCode"].ToString();
+                }               
+                Lst.Add(itm);
+            }
+
+            return Lst;
+
+        }
+        public List<RepositoryFiles> SearchFilesAudio(string Count, string query, string start, string End)
+        {
+            ServiceTableAdapter Ta = new ServiceTableAdapter();
+            FilesTableAdapter Flag_Ta = new FilesTableAdapter();
+            List<RepositoryFiles> Lst = new List<RepositoryFiles>();
+            MyDB.FilesDataTable Cnvrt_Dt;
+
+            DateTime startDt = DateTime.Now.AddYears(-10);
+
+            DateTime endDt = DateTime.Now.AddYears(+10);
+
+
+            //try
+            //{
+            if (start.Length > 5)
+            {
+                startDt = DateTime.Parse(start);
+            }
+
+            if (End.Length > 5)
+            {
+                endDt = DateTime.Parse(End).AddMinutes(1439);
+            }
+            //}
+            //catch
+            //{
+            //   startDt = DateTime.Now.AddYears(-10);
+
+            //   endDt = DateTime.Now.AddYears(+10);
+            //}
+
+
+
+            if (query.Trim().Length > 0)
+            {
+                Cnvrt_Dt = Flag_Ta.Select_Files_Like(int.Parse(Count), "%" + query + "%", startDt, endDt);
 
             }
             else
@@ -622,11 +702,11 @@ namespace McService
 
                 //Get Upload Q:
                 MyDB.DataTable1DataTable FlagUpload_Dt = Ta.SelectUploadQbyFileID(long.Parse(itm.Id));
-                if(FlagUpload_Dt.Rows.Count>0)
+                if (FlagUpload_Dt.Rows.Count > 0)
                 {
                     itm.serverPath = FlagUpload_Dt[0]["ServerIp"].ToString();
                     itm.serverCode = FlagUpload_Dt[0]["ServerCode"].ToString();
-                }               
+                }
                 Lst.Add(itm);
             }
 
@@ -687,8 +767,25 @@ namespace McService
             }
 
         }
+        public string balancer()
+        {
+            string vl = "";
+
+            //Categories:
+            ServiceTableAdapter Cnvrt_Ta = new ServiceTableAdapter();
+            //MyDB.DataTable1DataTable Cats_Dt= = Cnvrt_Ta.Select_Categories();
+
+            //Files-LogoQueue:
+
+            //ConvertQueue:
 
 
+            //FlagQueue:
+
+
+
+            return vl;
+        }
     }
     public class UserFileList
     {

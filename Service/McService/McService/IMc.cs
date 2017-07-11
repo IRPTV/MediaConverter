@@ -182,6 +182,12 @@ namespace McService
             BodyStyle = WebMessageBodyStyle.Bare,
             UriTemplate = "files/Search/{Count}/files?query={query}&start={start}&End={End}")]
         List<RepositoryFiles> SearchFiles(string Count,string query,string start,string End);
+        [OperationContract]
+        [WebInvoke(Method = "GET",
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare,
+            UriTemplate = "files/Search/audio/{Count}/files?query={query}&start={start}&End={End}")]
+        List<RepositoryFiles> SearchFilesAudio(string Count, string query, string start, string End);
 
 
         [OperationContract]
