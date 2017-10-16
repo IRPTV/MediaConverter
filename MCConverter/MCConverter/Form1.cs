@@ -133,6 +133,31 @@ namespace MCConverter
 
                         string DestFile = item.ConvertDirectory + SrcDir[SrcDir.Length - 2] + "\\" + Path.GetFileNameWithoutExtension(SourceFile) + item.FilenameSuffix;
                         string Command = item.Command.Replace("{in}", SourceFile).Replace("{out}", DestFile);
+                       // MessageBox.Show(Command);
+                        try
+                        {
+                            int ThumbPosition = 2;
+                            if (Command.Contains("{middle}"))
+                            {
+                                ThumbPosition =(int)Math.Round((double.Parse(GetDuration(SourceFile)) / 2));
+                             //   MessageBox.Show(ThumbPosition.ToString());
+                                Command= Command.Replace("{middle}", ThumbPosition.ToString());
+                            }
+                        }
+                        catch ( Exception Exp )
+                        {
+                            //MessageBox.Show(Exp.Message);
+                            Command=Command.Replace("{middle}", "2");
+                            if (richTextBox1.Lines.Length > 5)
+                            {
+                                richTextBox1.Text = "";
+                            }                           
+                            richTextBox1.Text += (Exp.Message) + " \n";
+                            richTextBox1.SelectionStart = richTextBox1.Text.Length;
+                            richTextBox1.ScrollToCaret();
+                            Application.DoEvents();
+                        }
+
 
                         if (!Directory.Exists(Path.GetDirectoryName(DestFile)))
                         {
@@ -267,6 +292,29 @@ namespace MCConverter
             //    Application.DoEvents();
             //}
             //return line;
+        }
+        protected string GetDuration(string filePath)
+        {
+            try
+            {
+                Process proc = new Process();
+                proc.StartInfo.FileName = Path.GetDirectoryName(Application.ExecutablePath) + "\\ffprobe";
+                proc.StartInfo.Arguments = " -v error -select_streams v:0 -show_entries stream=duration -of default=noprint_wrappers=1:nokey=1 \"" + filePath + "\"";
+                proc.StartInfo.CreateNoWindow = true;
+                proc.StartInfo.RedirectStandardOutput = true;
+                proc.StartInfo.RedirectStandardError = true;
+                proc.StartInfo.UseShellExecute = false;
+                proc.Start();
+                StreamReader reader = proc.StandardOutput;
+                string ss= reader.ReadToEnd();
+                //MessageBox.Show(ss);
+                return ss;
+            }
+            catch
+            {
+
+                return "8";
+            }
         }
         protected void FindDuration(string Str)
         {
