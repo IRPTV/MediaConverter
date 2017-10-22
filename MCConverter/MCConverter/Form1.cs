@@ -318,45 +318,49 @@ namespace MCConverter
         }
         protected void FindDuration(string Str)
         {
-            string TimeCode = "";
-            if (Str.Contains("Duration:"))
+            try
             {
-                TimeCode = Str.Substring(Str.IndexOf("Duration: "), 21).Replace("Duration: ", "").Trim();
-                string[] Times = TimeCode.Split('.')[0].Split(':');
-                double Frames = double.Parse(Times[0].ToString()) * (3600) * (25) +
-                    double.Parse(Times[1].ToString()) * (60) * (25) +
-                    double.Parse(Times[2].ToString()) * (25);
-                progressBar1.Maximum = int.Parse(Frames.ToString());
-            }
-            if (Str.Contains("time="))
-            {
-                try
+                string TimeCode = "";
+                if (Str.Contains("Duration:"))
                 {
-                    string CurTime = "";
-                    CurTime = Str.Substring(Str.IndexOf("time="), 16).Replace("time=", "").Trim();
-                    string[] CTimes = CurTime.Split('.')[0].Split(':');
-                    double CurFrame = double.Parse(CTimes[0].ToString()) * (3600) * (25) +
-                        double.Parse(CTimes[1].ToString()) * (60) * (25) +
-                        double.Parse(CTimes[2].ToString()) * (25);
+                    TimeCode = Str.Substring(Str.IndexOf("Duration: "), 21).Replace("Duration: ", "").Trim();
+                    string[] Times = TimeCode.Split('.')[0].Split(':');
+                    double Frames = double.Parse(Times[0].ToString()) * (3600) * (25) +
+                        double.Parse(Times[1].ToString()) * (60) * (25) +
+                        double.Parse(Times[2].ToString()) * (25);
+                    progressBar1.Maximum = int.Parse(Frames.ToString());
+                }
+                if (Str.Contains("time="))
+                {
+                    try
+                    {
+                        string CurTime = "";
+                        CurTime = Str.Substring(Str.IndexOf("time="), 16).Replace("time=", "").Trim();
+                        string[] CTimes = CurTime.Split('.')[0].Split(':');
+                        double CurFrame = double.Parse(CTimes[0].ToString()) * (3600) * (25) +
+                            double.Parse(CTimes[1].ToString()) * (60) * (25) +
+                            double.Parse(CTimes[2].ToString()) * (25);
 
 
-                    progressBar1.Value = int.Parse(CurFrame.ToString());
+                        progressBar1.Value = int.Parse(CurFrame.ToString());
 
-                    label1.Text = ((progressBar1.Value * 100) / progressBar1.Maximum).ToString() + "%";
+                        label1.Text = ((progressBar1.Value * 100) / progressBar1.Maximum).ToString() + "%";
 
+                        Application.DoEvents();
+                    }
+                    catch
+                    { }
+
+                }
+                if (Str.Contains("fps="))
+                {
+                    string Speed = "";
+                    Speed = Str.Substring(Str.IndexOf("fps="), 8).Replace("fps=", "").Trim();
+                    label4.Text = "Speed: " + (float.Parse(Speed) / 25).ToString() + " X ";
                     Application.DoEvents();
                 }
-                catch
-                { }
-
             }
-            if (Str.Contains("fps="))
-            {
-                string Speed = "";
-                Speed = Str.Substring(Str.IndexOf("fps="), 8).Replace("fps=", "").Trim();
-                label4.Text = "Speed: " + (float.Parse(Speed) / 25).ToString() + " X ";
-                Application.DoEvents();
-            }
+            catch { }
         }
         private void Form1_Load(object sender, EventArgs e)
         {
