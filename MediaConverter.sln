@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCConverter", "MCConverter\MCConverter\MCConverter.csproj", "{2205137B-2985-4527-84DC-71FB5A3717AB}"
 EndProject
@@ -18,6 +18,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoFlagger", "VideoFlagger\VideoFlagger.csproj", "{0B6695DE-5CC0-4F1D-88DD-44F8C144BD7D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCVTTGEN", "MCVTTGEN\MCVTTGEN\MCVTTGEN.csproj", "{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MCSMILGEN", "MCSMILGEN\MCSMILGEN\MCSMILGEN.csproj", "{180CF2EB-6002-440B-8086-C7ECFABEAD98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StaticSmilGen", "StaticSmilGen\StaticSmilGen.csproj", "{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -89,6 +93,22 @@ Global
 		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Release|x86.ActiveCfg = Release|Any CPU
 		{FFBB110E-4DA3-45A9-B8FE-43024C9D946C}.Release|x86.Build.0 = Release|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Debug|x86.Build.0 = Debug|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Release|x86.ActiveCfg = Release|Any CPU
+		{180CF2EB-6002-440B-8086-C7ECFABEAD98}.Release|x86.Build.0 = Release|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Debug|x86.Build.0 = Debug|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Release|x86.ActiveCfg = Release|Any CPU
+		{69784E6A-ECE3-46DA-B719-84A2A9E8B0F5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
