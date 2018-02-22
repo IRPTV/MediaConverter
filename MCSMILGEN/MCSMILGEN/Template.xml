@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<smil title="">
+	<body>
+		<switch>
+			<video height="480" src="{{FILENAME}}_Low200.mp4" systemLanguage="eng" width="850">
+				<param name="videoBitrate" value="200000" valuetype="data"></param>
+				<param name="audioBitrate" value="44100" valuetype="data"></param>
+			</video>
+			<video height="480" src="{{FILENAME}}_Low400.mp4" systemLanguage="eng" width="850">
+				<param name="videoBitrate" value="400000" valuetype="data"></param>
+				<param name="audioBitrate" value="44100" valuetype="data"></param>
+			</video>
+			<video height="720" src="{{FILENAME}}_Low800.mp4" systemLanguage="eng" width="1270">
+				<param name="videoBitrate" value="800000" valuetype="data"></param>
+				<param name="audioBitrate" value="44100" valuetype="data"></param>
+			</video>
+			<video height="1080" src="{{FILENAME}}.mp4" systemLanguage="eng" width="1920">
+				<param name="videoBitrate" value="2200000" valuetype="data"></param>
+				<param name="audioBitrate" value="44100" valuetype="data"></param>
+			</video>
+		</switch>
+	</body>
+</smil>
