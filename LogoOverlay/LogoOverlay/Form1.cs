@@ -289,6 +289,12 @@ namespace LogoOverlay
         }
         private static void ClearDirectory(string startLocation)
         {
+            int SavedH = 100;
+            try
+            {
+                SavedH = int.Parse(System.Configuration.ConfigurationSettings.AppSettings["SaveFilesHours"].Trim());
+            }
+            catch { }
             try
             {
                 foreach (var directory in Directory.GetDirectories(startLocation))
@@ -297,12 +303,12 @@ namespace LogoOverlay
                     string[] Files = Directory.GetFiles(directory);
                     foreach (string item in Files)
                     {
-                        if (System.IO.File.GetCreationTime(directory).AddDays(3) < DateTime.Now)
+                        if (System.IO.File.GetCreationTime(directory).AddHours(SavedH) < DateTime.Now)
                         {
                             System.IO.File.Delete(item);
                         }
                     }
-                    if (Directory.GetCreationTime(directory).AddDays(3) < DateTime.Now)
+                    if (Directory.GetCreationTime(directory).AddHours(SavedH) < DateTime.Now)
                     {
                         Directory.Delete(directory, false);
                     }
