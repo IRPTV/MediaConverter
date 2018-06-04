@@ -158,6 +158,83 @@ namespace McService
             }
             return Lst;
         }
+        public List<UserFiles> UserFiles2(string UserId)
+        {
+            ServiceTableAdapter Ta = new ServiceTableAdapter();
+            MyDB.DataTable1DataTable Dt = Ta.Files_Select_Top200(int.Parse(UserId));
+
+            List<UserFiles> Lst = new List<UserFiles>();
+
+            for (int i = 0; i < Dt.Rows.Count; i++)
+            {
+                UserFiles ff = new UserFiles();
+                ff.Filename = Dt[i]["filename"].ToString();
+                ff.Duration = Dt[i]["Duration"].ToString();
+                ff.FileSize = Dt[i]["FileSize"].ToString();
+                ff.UserID = Dt[i]["UserID"].ToString();
+                ff.Error = Dt[i]["Error"].ToString();
+                ff.ErrorLog = Dt[i]["ErrorLog"].ToString();
+
+
+                //Convert:
+                MyDB.DataTable1DataTable Dt_Convert = Ta.User_Files_Convert(int.Parse(Dt[i]["fid"].ToString()));
+                List<UserFilesConvert> cnvlist = new List<UserFilesConvert>();
+                for (int j = 0; j < Dt_Convert.Rows.Count; j++)
+                {
+                    UserFilesConvert cnv = new UserFilesConvert();
+                    cnv.Convert_Datetime_Done = Dt_Convert[j]["Datetime_Done"].ToString();
+                    cnv.Convert_Datetime_Insert = Dt_Convert[j]["Datetime_Insert"].ToString();
+                    cnv.Convert_Datetime_Start = Dt_Convert[j]["Datetime_Start"].ToString();
+                    cnv.Converted = Dt_Convert[j]["Converted"].ToString();
+                    cnv.ProfileTitle = Dt_Convert[j]["Title"].ToString();
+                    cnvlist.Add(cnv);
+                }
+                ff.FilesCnvrt = cnvlist;
+
+                //Flag:
+                MyDB.DataTable1DataTable Dt_Flag = Ta.User_Files_Select_Flag(int.Parse(Dt[i]["fid"].ToString()));
+                List<UserFilesFlag> flglist = new List<UserFilesFlag>();
+                for (int p = 0; p < Dt_Flag.Rows.Count; p++)
+                {
+                    UserFilesFlag flg = new UserFilesFlag();
+                    flg.Flag_Datetime_Done = Dt_Flag[p]["Datetime_Done"].ToString();
+                    flg.Flag_Datetime_Insert = Dt_Flag[p]["Datetime_Insert"].ToString();
+                    flg.Flag_Datetime_Start = Dt_Flag[p]["Datetime_Start"].ToString();
+                    flg.Flaged = Dt_Flag[p]["isdone"].ToString();
+                    flg.ProfileTitle = Dt_Flag[p]["Title"].ToString();
+                    flglist.Add(flg);
+                }
+                ff.FilesFlg = flglist;
+
+
+                //Upload:
+                MyDB.DataTable1DataTable Dt_Upload = Ta.User_Files_SelectUpload(int.Parse(Dt[i]["fid"].ToString()));
+                List<UserFilesUpload> upllist = new List<UserFilesUpload>();
+                for (int m = 0; m < Dt_Upload.Rows.Count; m++)
+                {
+                    UserFilesUpload upl = new UserFilesUpload();
+                    upl.Upload_Datetime_Done = Dt_Upload[m]["Datetime_Done"].ToString();
+                    upl.Upload_Datetime_Insert = Dt_Upload[m]["Datetime_Insert"].ToString();
+                    upl.Upload_Datetime_Start = Dt_Upload[m]["Datetime_Start"].ToString();
+                    upl.Uploaded = Dt_Upload[m]["Uploaded"].ToString();
+                    upl.ServerIp = Dt_Upload[m]["ServerIp"].ToString();
+                    upl.ProfileTitle = Dt_Upload[m]["Title"].ToString();
+                    upllist.Add(upl);
+                }
+                ff.FilesUpld = upllist;
+
+
+
+
+
+
+
+
+
+                Lst.Add(ff);
+            }
+            return Lst;
+        }
         public List<UserFiles> UserFilesByDate(string UserId,string date)
         {
             ServiceTableAdapter Ta = new ServiceTableAdapter();

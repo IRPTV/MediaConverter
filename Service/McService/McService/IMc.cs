@@ -45,6 +45,12 @@ namespace McService
         List<UserFiles> UserFiles(string UserId);
         [OperationContract]
         [WebInvoke(Method = "GET",
+            ResponseFormat = WebMessageFormat.Json,
+            BodyStyle = WebMessageBodyStyle.Bare,
+            UriTemplate = "files/user2/{UserId}")]
+        List<UserFiles> UserFiles2(string UserId);
+        [OperationContract]
+        [WebInvoke(Method = "GET",
            ResponseFormat = WebMessageFormat.Json,
            BodyStyle = WebMessageBodyStyle.Bare,
            UriTemplate = "files/user/{UserId}/{date}")]
