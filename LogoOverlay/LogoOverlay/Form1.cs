@@ -165,8 +165,14 @@ namespace LogoOverlay
                         }
                         else
                         {
-                            System.IO.File.Copy(SourceFile, DestFile, true);
-                        }
+                            try
+                            {
+                                System.IO.File.Copy(SourceFile, DestFile, true);
+
+                            }
+                            catch (Exception er){
+                                ErrorLog = "ERROR COPY" + er.Message;
+                            }                  }
 
                         if (Error)
                         {
@@ -305,13 +311,21 @@ namespace LogoOverlay
                     {
                         if (System.IO.File.GetCreationTime(directory).AddHours(SavedH) < DateTime.Now)
                         {
-                            System.IO.File.Delete(item);
-                        }
+                            try
+                            {
+                                System.IO.File.Delete(item);
+
+                            }
+                            catch { }                  }
                     }
                     if (Directory.GetCreationTime(directory).AddHours(SavedH) < DateTime.Now)
                     {
-                        Directory.Delete(directory, false);
-                    }
+                        try
+                        {
+                            Directory.Delete(directory, false);
+
+                        }
+                        catch { }              }
 
                 }
             }
