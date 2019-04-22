@@ -673,7 +673,7 @@ namespace McService
                 if (query.ToLower() == ".mp3" || query.ToLower() == ".wav")
                     Cnvrt_Dt = Flag_Ta.Select_Files_Like_Audio(int.Parse(Count), startDt, endDt);
                 else
-                Cnvrt_Dt = Flag_Ta.Select_Files_Like(int.Parse(Count), query ,startDt,endDt);
+                Cnvrt_Dt = Flag_Ta.Select_Files_Like(int.Parse(Count), "'%"+query+"%'" ,startDt,endDt);
 
             }
             else
@@ -687,16 +687,17 @@ namespace McService
                 RepositoryFiles itm = new RepositoryFiles();
                 if (Cnvrt_Dt[i]["ServerCode"].ToString().ToLower() == "1")
                 {
-                    itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mpg", ".mp4").Replace(".wav", ".mp3");
-                    itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
+                    itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mts", ".mp4").Replace(".mov", ".mp4").Replace(".mpg", ".mp4").Replace(".wav", ".mp3");
+                    itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mts", ".mp4").Replace(".mov", ".mp4").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
 
                 }
                 if (Cnvrt_Dt[i]["ServerCode"].ToString().ToLower() == "2")
                 {
-                    itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress2"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mpg", ".mp4").Replace(".wav", ".mp3");
-                    itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress2"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
+                    itm.Filename = WebConfigurationManager.AppSettings["viewfilesaddress2"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mpg", ".mp4").Replace(".mts", ".mp4").Replace(".mov", ".mp4").Replace(".wav", ".mp3");
+                    itm.Thumbnail = WebConfigurationManager.AppSettings["viewfilesaddress2"] + "/" + Cnvrt_Dt[i]["Filename"].ToString().ToLower().Replace("\\", "/").Replace(".mts", ".mp4").Replace(".mov", ".mp4").Replace(".mp4", ".jpg").Replace(".mpg", ".jpg");
 
                 }
+                itm.serverCode = Cnvrt_Dt[i]["ServerCode"].ToString().ToLower();
                 itm.Id = Cnvrt_Dt[i]["FId"].ToString();
                 itm.relativePath = Cnvrt_Dt[i]["Filename"].ToString();
                 itm.duration = Cnvrt_Dt[i]["duration"].ToString();
@@ -834,6 +835,13 @@ namespace McService
 
             ServiceTableAdapter Ta = new ServiceTableAdapter();
             FilesTableAdapter FTa = new FilesTableAdapter();
+            string[] f = FileName.Split('\\');
+            //Prevent 0 for IKTV Error
+            if(f.Length>0)
+            {
+                if (f[f.Length - 1].ToLower() == "0.mp4")
+                    return;
+            }
 
             int RetId = int.Parse(FTa.Insert_File(FileName, int.Parse(UserId), 0, 0,Origin).ToString());
 
