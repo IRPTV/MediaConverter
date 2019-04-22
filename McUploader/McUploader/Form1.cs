@@ -139,14 +139,23 @@ namespace McUploader
                         }
                         else
                         {
+                            //MessageBox.Show("Org:"+Itm.Origin);
                             string[] tmpOrg = Itm.Origin.Split(new string[] { "\\" },100,StringSplitOptions.RemoveEmptyEntries);
-                            for (int i = 1; i < tmpOrg.Length - 1; i++)
+                            //MessageBox.Show("tmpOrg len:" + tmpOrg.Length);
+
+                            //Iktv:for press for index start from 1 but changed to zero for iktv and added check lenght of item i >1
+                            for (int i = 0; i < tmpOrg.Length - 1; i++)
                             {
+                                //MessageBox.Show(tmpOrg[i]);
+                                if(tmpOrg[i].Trim().Length>1)
                                 Origin += tmpOrg[i] + "\\";
                             }
                             DestDir = Origin.Replace(" ", "-").Replace("(", "-").Replace(")", "-").Replace("&", "-");
+                            //MessageBox.Show("DestDir:" + DestDir);
+
                         }
                         string Dest = Itm.ServerIp + DestDir + Path.GetFileNameWithoutExtension(Itm.SrcDirectory + Itm.Filename) + Itm.FilenameSuffix;
+                       // MessageBox.Show("Dest:"+Dest);
                       //  MessageBox.Show(Dest);
 
 
