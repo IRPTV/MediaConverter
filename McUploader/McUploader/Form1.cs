@@ -154,7 +154,11 @@ namespace McUploader
                             //MessageBox.Show("DestDir:" + DestDir);
 
                         }
-                        string Dest = Itm.ServerIp + DestDir + Path.GetFileNameWithoutExtension(Itm.SrcDirectory + Itm.Filename) + Itm.FilenameSuffix;
+                        string Dest = "";
+                        if(Itm.FilenameSuffix.ToLower().Contains("sprite"))
+                         Dest = Itm.ServerIp + DestDir + Path.GetFileNameWithoutExtension(Itm.SrcDirectory +"\\"+ Itm.Filename) + Itm.FilenameSuffix.Replace("\\", "");
+                        else
+                        Dest = Itm.ServerIp + DestDir + Path.GetFileNameWithoutExtension(Itm.SrcDirectory + Itm.Filename) + Itm.FilenameSuffix;
                        // MessageBox.Show("Dest:"+Dest);
                       //  MessageBox.Show(Dest);
 
