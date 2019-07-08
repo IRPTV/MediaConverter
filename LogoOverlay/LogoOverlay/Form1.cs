@@ -110,7 +110,7 @@ namespace LogoOverlay
                         }
 
                         string DestFile = item.SrcDirectory + "logo\\" + item.Filename;
-                        string Command = "-i " + "\"" + SourceFile + "\"" + " -vf \"movie=" + item.LogoFile + " [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
+                        string Command = "-i " + "\"" + SourceFile + "\""  + " -preset veryfast -vf \"movie=" + item.LogoFile + " [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
                         //if(item.Filename.ToLower().Contains(".mp3")|| item.Filename.ToLower().Contains(".wav"))
                         //{
                         //    Command = "-i " + "\"" + SourceFile + "\"" + " -vf \"movie=" + item.LogoFile + " [watermark]; [in][watermark] overlay=10:10 [out]\"    -y  " + "\"" + DestFile + "\"";
